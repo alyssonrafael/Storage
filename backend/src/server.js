@@ -4,6 +4,7 @@ const { PrismaClient } = require('@prisma/client');
 require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes')
+const categoriaRoutes = require('./routes/categoriaRoutes')
 
 const app = express();
 const prisma = new PrismaClient();
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api', authRoutes, userRoutes  );
+app.use('/api', authRoutes, userRoutes, categoriaRoutes);
 
 // Teste de conexão com o banco de dados
 async function testDatabaseConnection() {
