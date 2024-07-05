@@ -1,4 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const newCategory = async (req, res) => {
@@ -11,7 +11,9 @@ const newCategory = async (req, res) => {
     });
     // Se já existir uma categoria com o mesmo nome, retorna o status 409
     if (existingCategory) {
-      return res.status(409).json({ error: "Categoria com esse nome já existe" });
+      return res
+        .status(409)
+        .json({ error: "Categoria com esse nome já existe" });
     }
     // Se não existir, cria a categoria
     const categoria = await prisma.categoria.create({
@@ -65,7 +67,9 @@ const updateCategory = async (req, res) => {
     });
     // se ja existir uma com o nome nao deixa criar
     if (existingCategory) {
-      return res.status(409).json({ error: "Categoria com esse nome já existe" });
+      return res
+        .status(409)
+        .json({ error: "Categoria com esse nome já existe" });
     }
     // se nao atualiza
     const categoria = await prisma.categoria.update({
@@ -75,27 +79,61 @@ const updateCategory = async (req, res) => {
 
     res.status(200).json(categoria);
   } catch (error) {
-    if (error.code === 'P2025') {//codigo retornado do prisma dizendo que nao foi encontrado
+    if (error.code === "P2025") {
+      //codigo retornado do prisma dizendo que nao foi encontrado
       return res.status(404).json({ error: "Categoria não encontrada" });
     }
     res.status(500).json({ error: error.message });
   }
 };
-// exclusao de categoria
+// exclusao de categoria (marcar como deletada)
 const deleteCategory = async (req, res) => {
   const { id } = req.params;
   try {
-    await prisma.categoria.delete({
+    // Atualiza a categoria no banco de dados para marcar como deletada
+    const categoria = await prisma.categoria.update({
       where: { id: parseInt(id) },
+      data: {
+        deleted: true, // Marca a categoria como deletada
+      },
     });
 
-    res.status(204).send();
+    res.status(200).json(categoria);
   } catch (error) {
-    if (error.code === 'P2025') {//codigo retornado do prisma dizendo que nao foi encontrado
+    if (error.code === "P2025") {
+      //codigo retornado do prisma dizendo que nao foi encontrado
+      return res.status(404).json({ error: "Categoria não encontrada" });
+    }
+    res.status(500).json({ error: error.message });
+  }
+};
+// restaurar categoria marcando o campo deleted como false
+const restoreCategory = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Atualiza a categoria no banco de dados para restaurar
+    const categoria = await prisma.categoria.update({
+      where: { id: parseInt(id) },
+      data: {
+        deleted: false, // Restaura a categoria marcada como deletada
+      },
+    });
+
+    res.status(200).json(categoria);
+  } catch (error) {
+    if (error.code === "P2025") {
+      //codigo retornado do prisma dizendo que nao foi encontrado
       return res.status(404).json({ error: "Categoria não encontrada" });
     }
     res.status(500).json({ error: error.message });
   }
 };
 
-module.exports = { newCategory, getCategories, getCategoryById, updateCategory, deleteCategory };
+module.exports = {
+  newCategory,
+  getCategories,
+  getCategoryById,
+  updateCategory,
+  deleteCategory,
+  restoreCategory,
+};
