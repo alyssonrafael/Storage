@@ -33,6 +33,7 @@ model Produto {
   categoria   Categoria @relation(fields: [categoriaId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deleted    Boolean   @default(false)
 }
 
 model Categoria {
