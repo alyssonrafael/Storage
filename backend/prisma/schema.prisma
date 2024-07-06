@@ -18,7 +18,8 @@ model User {
   name     String
   email    String   @unique
   password String
-  role     String   @default("USER")
+  role      String   @default("USER")
+  vendas    Venda[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -27,13 +28,14 @@ model Produto {
   id          Int       @id @default(autoincrement())
   nome        String
   preco       Float
-  quantidade  Int       
-  disponivel  Boolean   
+  quantidade  Int
+  disponivel  Boolean
   categoriaId Int
   categoria   Categoria @relation(fields: [categoriaId], references: [id])
+  vendas      VendaProduto[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  deleted    Boolean   @default(false)
+  deleted     Boolean   @default(false)
 }
 
 model Categoria {
@@ -42,5 +44,31 @@ model Categoria {
   produtos  Produto[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  deleted    Boolean   @default(false)
+  deleted   Boolean   @default(false)
+}
+
+model Venda {
+  id               Int             @id @default(autoincrement())
+  data             DateTime        @default(now())
+  total            Float
+  desconto         Float           @default(0.0)
+  produtos         VendaProduto[]
+  userId           String
+  user             User            @relation(fields: [userId], references: [id])
+  observacao       String?
+  formaDePagamento String
+  deleted          Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model VendaProduto {
+  id         Int             @id @default(autoincrement())
+  venda      Venda           @relation(fields: [vendaId], references: [id])
+  vendaId    Int
+  produto    Produto         @relation(fields: [produtoId], references: [id])
+  produtoId  Int
+  quantidade Int
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 }
