@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoutes');
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const produtoRoutes = require('./routes/produtoRoutes');
 const vendasRoutes = require('./routes/vendasRouter');
+const relatoriosRoutes = require('./routes/relatoriosRoutes')
 
 const app = express();
 const prisma = new PrismaClient();
@@ -16,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api', authRoutes, userRoutes, categoriaRoutes, produtoRoutes, vendasRoutes);
+app.use('/api', authRoutes, userRoutes, categoriaRoutes, produtoRoutes, vendasRoutes, relatoriosRoutes);
 
 // Teste de conexão com o banco de dados
 async function testDatabaseConnection() {
