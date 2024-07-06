@@ -33,7 +33,13 @@ const newProduct = async (req, res) => {
 // listar todos os produtos
 const getProducts = async (req, res) => {
   try {
-    const produtos = await prisma.produto.findMany();
+    const produtos = await prisma.produto.findMany({
+      include: {
+        categoria: {
+          select: { nome: true },
+        },
+      },
+    });
     res.status(200).json(produtos);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -46,6 +52,11 @@ const getProductById = async (req, res) => {
   try {
     const produto = await prisma.produto.findUnique({
       where: { id: parseInt(id) },
+      include: {
+        categoria: {
+          select: { nome: true },
+        },
+      },
     });
 
     if (!produto) {
