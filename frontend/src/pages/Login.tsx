@@ -1,7 +1,7 @@
 
 function Login() {
   return (
-    <div>Login</div>
+    <div className=" text-blaze-orange-500">Login</div>
   )
 }
 
