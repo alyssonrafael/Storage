@@ -26,7 +26,8 @@ const AppRouter: React.FC = () => (
       <Route
         path="/home"
         element={
-          <ProtectedRoute acessControl={"ADMIN" || "USER"}>
+          // verifica se o acesscontrol tem user ou adimin para retornar a rota de acordo com a role do user
+          <ProtectedRoute acessControl={["USER", "ADMIN"]} > 
             <Home />
           </ProtectedRoute>
         }
@@ -35,7 +36,7 @@ const AppRouter: React.FC = () => (
       <Route
         path="/products"
         element={
-          <ProtectedRoute acessControl={"ADMIN" || "USER"}>
+          <ProtectedRoute acessControl={["USER", "ADMIN"]}>
             <Products />
           </ProtectedRoute>
         }
@@ -44,7 +45,7 @@ const AppRouter: React.FC = () => (
       <Route
         path="/sales"
         element={
-          <ProtectedRoute acessControl={"ADMIN" || "USER"}>
+          <ProtectedRoute acessControl={["USER", "ADMIN"]}>
             <Sales />
           </ProtectedRoute>
         }
@@ -53,7 +54,7 @@ const AppRouter: React.FC = () => (
       <Route
         path="/reports"
         element={
-          <ProtectedRoute acessControl={"ADMIN" || "USER"}>
+          <ProtectedRoute acessControl={["USER", "ADMIN"]}>
             <Reports />
           </ProtectedRoute>
         }
@@ -62,7 +63,7 @@ const AppRouter: React.FC = () => (
       <Route
         path="/accountediting"
         element={
-          <ProtectedRoute acessControl={"ADMIN" || "USER"}>
+          <ProtectedRoute acessControl={["USER", "ADMIN"]}>
             <AccountEditing />
           </ProtectedRoute>
         }
@@ -71,7 +72,7 @@ const AppRouter: React.FC = () => (
       <Route
         path="/about"
         element={
-          <ProtectedRoute acessControl={"ADMIN" || "USER"}>
+          <ProtectedRoute acessControl={["USER", "ADMIN"]}>
             <About />
           </ProtectedRoute>
         }
