@@ -27,6 +27,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/" replace />;
   }
 
+    // Verifica se o token está expirado
+    const currentTime = Date.now() / 1000; // Data e hora atuais em segundos
+    if (decoded.exp && decoded.exp < currentTime) {
+      alert("token expirado, fazer o login novamente")//alerta que vai ter que fazer login npvamente pois o token expirou
+      localStorage.removeItem("token"); //remove o token 
+      return <Navigate to="/" replace />; //redireciona para login
+    }
+
   // Verifica se a role do usuário está no conjunto de roles permitidas array para permitir mais de uma role por pagina
   if (acessControl && !acessControl.includes(decoded.role)) {
     localStorage.removeItem("token");
