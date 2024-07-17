@@ -44,9 +44,9 @@ const login = async (req, res) => {
 
     // Verifica se o usuário existe e se a senha fornecida corresponde à senha armazenada
     if (user && (await bcrypt.compare(password, user.password))) {
-      // Gera um token JWT com o ID e role do usuário, expira em 1 hora
+      // Gera um token JWT com o ID e role do usuário, expira em 8 horas
       const token = jwt.sign({ userId: user.id, role: user.role }, secretKey, {
-        expiresIn: "1h",
+        expiresIn: "8h",
       });
       // Responde com o token e o role do usuário
       res.json({ token, role: user.role });
