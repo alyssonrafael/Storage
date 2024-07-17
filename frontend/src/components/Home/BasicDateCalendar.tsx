@@ -89,7 +89,7 @@ const Calendar = () => {
         formattedDate = format(day, "dd"); // Formata o dia do mês como "dd"
         days.push(
           <div
-            className={`p-1 text-center cursor-pointer ${
+            key={day.toString()} className={`p-1 text-center cursor-pointer ${
               !isSameMonth(day, monthStart) ? "text-gray-300" : ""
             } ${
               isSameDay(day, today)
@@ -102,7 +102,7 @@ const Calendar = () => {
         );
         day = addDays(day, 1); // Avança para o próximo dia
       }
-      rows.push(<div className="grid grid-cols-7">{days}</div>); // Adiciona uma linha de dias à matriz de linhas
+      rows.push(<div className="grid grid-cols-7" key={day.toString()}>{days}</div>); // Adiciona uma linha de dias à matriz de linhas
       days = []; // Limpa o array de dias para a próxima linha
     }
 
