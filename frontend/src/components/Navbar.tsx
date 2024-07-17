@@ -19,7 +19,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, toggleMenu }) => {
   return (
 
-    <div className="flex-col h-screen py-10 bg-blaze-orange-500 shadow lg:min-w-44 ">
+    <div className="flex-col h-full py-10 bg-blaze-orange-500 shadow lg:min-w-44 ">
       <div className=" grid grid-row-4 h-full">
         {/* div com o titulo */}
         <div className="flex items-center justify-center space-x-4 pb-4 row-span-1">

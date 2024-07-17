@@ -18,7 +18,7 @@ const ProtectedLayout = () => {
   };
 
   return (
-    <div className="lg:grid lg:grid-cols-12 lg:gap-5 lg:w-screen">
+    <div className="lg:grid lg:grid-cols-12 lg:gap-5 lg:w-screen min-h-screen">
       {/* Navbar visível em telas maiores */}
       <div className="lg:block hidden lg:col-span-2">
         <Navbar isMenuOpen={isNavbarOpen} toggleMenu={closeNavbar} />
