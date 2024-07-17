@@ -340,29 +340,35 @@ const getSalesReport = async (req, res) => {
 };
 
 const getUltimasVendas = async (req, res) => {
-    try {
-      // Busca as últimas 4 vendas no banco de dados
-      const vendas = await prisma.venda.findMany({
-        where: { deleted: false }, // Filtra apenas vendas não deletadas
-        orderBy: { createdAt: 'desc' }, // Ordena por data de criação decrescente
-        take: 4, // Limita o resultado a 4 registros
-        include: {
-          produtos: { // Inclui os produtos associados à venda
-            include: {
-              produto: true // Inclui os detalhes do produto associado
-            }
-          },
-          user: true, // Inclui os detalhes do usuário que realizou a venda
+  try {
+    // Busca as últimas 4 vendas no banco de dados
+    const vendas = await prisma.venda.findMany({
+      where: { deleted: false }, // Filtra apenas vendas não deletadas
+      orderBy: { createdAt: 'desc' }, // Ordena por data de criação decrescente
+      take: 5, // Limita o resultado a 5 registros
+      include: {
+        produtos: { // Inclui os produtos associados à venda
+          include: {
+            produto: true // Inclui os detalhes do produto associado
+          }
         },
-      });
-  
-      // Retorna as vendas encontradas em formato JSON
-      res.status(200).json(vendas);
-    } catch (error) {
-      // Retorna um erro 500 caso ocorra algum problema na consulta ao banco de dados
-      res.status(500).json({ error: error.message });
-    }
-  };
+        user: true, // Inclui os detalhes do usuário que realizou a venda
+      },
+    });
+
+    // contagem de produtos vendidos a cada venda
+    const vendasComContagem = vendas.map(venda => ({
+      ...venda,
+      totalProdutos: venda.produtos.reduce((total, prod) => total + prod.quantidade, 0)
+    }));
+
+    // Retorna as vendas encontradas em formato JSON com a contagem de produtos vendidos
+    res.status(200).json(vendasComContagem);
+  } catch (error) {
+    // Retorna um erro 500 caso ocorra algum problema na consulta ao banco de dados
+    res.status(500).json({ error: error.message });
+  }
+};
   
 
 
