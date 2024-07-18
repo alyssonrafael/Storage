@@ -93,10 +93,10 @@ const updateProduct = async (req, res) => {
       where: { id: parseInt(id) },
       data: {
         nome,
-        preco,
-        quantidade,
+        preco: parseFloat(preco), // Certificando que preco é float
+        quantidade: parseInt(quantidade), // Certificando que quantidade é inteiro
         disponivel,
-        categoriaId,
+        categoriaId: parseInt(categoriaId), // Certificando que categoriaId é inteiro
       },
     });
 
@@ -156,6 +156,18 @@ const restoreProduct = async (req, res) => {
   }
 };
 
+//funçao que conta a quantidade de produtos
+const countProdutos = async (req, res) => {
+  try {
+    const totalProdutos = await prisma.produto.count({
+      where: {deleted: false}} // so os produtos que nao estao marcados com deleted
+    );
+    res.status(200).json({ totalProdutos });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   newProduct,
   getProducts,
@@ -163,4 +175,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   restoreProduct,
+  countProdutos,
 };

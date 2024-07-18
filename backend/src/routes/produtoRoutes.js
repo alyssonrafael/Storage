@@ -6,6 +6,7 @@ const {
   updateProduct,
   deleteProduct,
   restoreProduct,
+  countProdutos,
 } = require("../controllers/produtoController");
 // Criação de um novo roteador Express
 const router = express.Router();
@@ -21,5 +22,7 @@ router.put("/produto/:id", updateProduct);
 router.put("/delete-produto/:id", deleteProduct);
 //rota pra resturar produto
 router.put("/restore-produto/:id", restoreProduct);
+//contagem de produtos
+router.get('/produtos/count', countProdutos);
 
 module.exports = router;

@@ -84,7 +84,7 @@ npm run dev
 
 <h2 id="routes">📍 API Endpoints</h2>
 
-Essas são minhas rotas: e possivel copiar o arquivo **Storage.postman_collection.json"**</a> para seu postman para ter acesso a todos os testes de rotas
+Essas são as rotas da minha API:
 
 <h1>Auth</h1>
 
@@ -117,14 +117,15 @@ Essas são minhas rotas: e possivel copiar o arquivo **Storage.postman_collectio
 
 <h1>Produtos</h1>
 
-| Route                                                        | description                             |
-| ------------------------------------------------------------ | --------------------------------------- |
-| <kbd>GET/http://localhost:3333/api/produtos</kbd>            | Retorna todos os produtos cadasstrados  |
-| <kbd>POST/http://localhost:3333/api/produto</kbd>            | responsavel por criar um novo produto   |
-| <kbd>GET/http://localhost:3333/api/produto/:id</kbd>         | lista produto expecifico com base no id |
-| <kbd>PUT/http://localhost:3333/api/produto/:id</kbd>         | editar produto                          |
-| <kbd>PUT/http://localhost:3333/api/delete-produto/:id</kbd>  | marca produto como excluido             |
-| <kbd>PUT/http://localhost:3333/api/restore-produto/:id</kbd> | marca produto como nao excluido         |
+| Route                                                        | description                              |
+| ------------------------------------------------------------ | ---------------------------------------- |
+| <kbd>GET/http://localhost:3333/api/produtos</kbd>            | Retorna todos os produtos cadasstrados   |
+| <kbd>POST/http://localhost:3333/api/produto</kbd>            | responsavel por criar um novo produto    |
+| <kbd>GET/http://localhost:3333/api/produto/:id</kbd>         | lista produto expecifico com base no id  |
+| <kbd>PUT/http://localhost:3333/api/produto/:id</kbd>         | editar produto                           |
+| <kbd>PUT/http://localhost:3333/api/delete-produto/:id</kbd>  | marca produto como excluido              |
+| <kbd>PUT/http://localhost:3333/api/restore-produto/:id</kbd> | marca produto como nao excluido          |
+| <kbd>get/http://localhost:3333/api/produtos/count</kbd>      | conta o numero de produtos Não excluidos |
 
 <h1>Vendas</h1>
 
@@ -137,17 +138,17 @@ Essas são minhas rotas: e possivel copiar o arquivo **Storage.postman_collectio
 
 <h1>Relatorios</h1>
 
-| Route                                                                | description                                                                           |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Route                                                                           | description                                                                           |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | <kbd>GET/http://localhost:3333/api/relatorios/vendas-dia</kbd>                  | Retorna todas as vendas do dia                                                        |
-| <kbd>GET/http://localhost:3333/api/relatorios/vendas-mes</kbd>                   | Retorna todas as vendas do mes                                                        |
+| <kbd>GET/http://localhost:3333/api/relatorios/vendas-mes</kbd>                  | Retorna todas as vendas do mes                                                        |
 | <kbd>GET/http://localhost:3333/api/relatorios/vendas-ano</kbd>                  | Retorna todas as vendas do ano                                                        |
 | <kbd>GET/http://localhost:3333/api/relatorios/categoria-top-mes</kbd>           | Retorna a categoria mais vendida do mes                                               |
 | <kbd>GET/http://localhost:3333/api/relatorios/total-vendas-mes</kbd>            | Retorna o total de vendas no mes                                                      |
 | <kbd>GET/http://localhost:3333/api/relatorios/produtos-vendidos-categoria</kbd> | Retorna a quantidade de proddutos vendidos por categoria                              |
 | <kbd>GET/http://localhost:3333/api/relatorios/produtos</kbd>                    | Retorna todos os produtos ou produtos filtrados com base nos parametros da requisiçao |
 | <kbd>GET/http://localhost:3333/api/relatorios/vendas</kbd>                      | Retorna todas as vendas ou as vendas filtrados com base nos parametros da requisiçao  |
-| <kbd>GET/http://localhost:3333/api/ultimas-vendas</kbd>              | Retorna uma quantidade limitada de ulltimas vendas                                    |
+| <kbd>GET/http://localhost:3333/api/ultimas-vendas</kbd>                         | Retorna uma quantidade limitada de ulltimas vendas                                    |
 
 <h2 id="colab">✒️ Autor</h2>
 
