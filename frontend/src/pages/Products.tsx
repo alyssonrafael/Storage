@@ -13,7 +13,7 @@ const Products: React.FC = () => {
 
   return (
     <div className="
-    grid lg:grid-cols-10 lg:gap-0
+    grid lg:grid-cols-10 lg:gap-2
     md:gap-7
     grid-cols-5 gap-3
     ">
@@ -29,9 +29,9 @@ const Products: React.FC = () => {
         <TableProducts onProductChange={handleProductChange} />
       </div>
       {/* Seção de cadastro de produto (Placeholder) */}
-      <div className="col-span-5 lg:col-span-3">Cadastro de produto</div>
+      <div className="col-span-5 lg:col-span-4 lg:mr-2">Cadastro de produto</div>
       {/* Seção de cadastro de categoria (Placeholder) */}
-      <div className=" col-span-5 lg:col-span-3">Cadastro de categoria</div>
+      <div className=" col-span-5 lg:col-span-4 lg:mr-2">Cadastro de categoria</div>
     </div>
   );
 };
