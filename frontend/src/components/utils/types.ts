@@ -1,7 +1,19 @@
+// interfaces gerais
+ export interface Categoria {
+    id: number;
+    nome: string;
+  }
 export interface Product {
     id: number;
     nome: string;
     preco: number;
+    quantidade: number;
+    disponivel: boolean;
+    categoriaId: number;
+    deleted: boolean;
+    createdAt: string;
+    updatedAt: string;
+    categoria: {nome: string}
   }
   
   export interface SaleItem {
@@ -13,7 +25,7 @@ export interface Product {
     createdAt: string;
     updatedAt: string;
   }
-  //so o name e obrigatorio nessa interface para nao ter que passar todas as informaçoes quando so preciso do nome
+ 
   export interface User {
     id?: string;
     name: string;
@@ -38,6 +50,38 @@ export interface Product {
     produtos: SaleItem[];
     user: User;
   }
-  
+  //  types gerais
   export type SalesData = Sale[];
-  
+  //types e interfaces usados pela tabela de produtos
+  export interface ProductData {
+    id: number;
+    nome: string;
+    preco: number;
+    quantidade: number;
+    categoria: { nome: string };
+    disponivel: boolean;
+    deleted?: boolean; 
+    createdAt: string; 
+    updatedAt: string; 
+  }
+  export interface ProductForm {
+    nome: string;
+    preco: number;
+    quantidade: number;
+    categoria: Categoria;
+    categoriaId: number;
+    disponivel: boolean;
+  }
+  export type ArrayProductData = Array<{
+    id: number;
+    nome: string;
+    preco: number;
+    quantidade: number;
+    categoria: { nome: string };
+    categoriaId:number;
+    disponivel: boolean;
+    deleted?: boolean;
+    createdAt: string;
+    updatedAt: string;
+  }>;
+//fim dos types e interfaces usados pela tabela de produtos
