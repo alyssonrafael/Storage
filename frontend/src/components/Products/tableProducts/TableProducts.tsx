@@ -56,7 +56,7 @@ const TableProducts: React.FC<{ onProductChange: () => void }> = ({
     };
 
     fetchData();
-  }, [editProductId]); //esta monitorando o editProductId para sempre atualizar quanndo ele mudar para que a categoria seja corespondente ao que foi alterado
+  }, [editProductId, onProductChange]); //esta monitorando o editProductId e onProductChange para sempre atualizar ou cadastrar ele mudar para que a categoria seja corespondente ao que foi alterado e o novo produto apareca na tabela
 
   // Função para atualizar um produto
   const updateProduct = async (id: number, formData: ProductForm) => {

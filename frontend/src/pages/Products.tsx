@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SubTitle from "../components/Products/SubTitle";
 import TableProducts from "../components/Products/tableProducts/TableProducts";
+import NewProducts from "../components/Products/NewProducts";
 
 const Products: React.FC = () => {
   // Estado para controlar a mudança de produtos
@@ -28,8 +29,8 @@ const Products: React.FC = () => {
         {/* Componente TableProducts que exibe a tabela de produtos */}
         <TableProducts onProductChange={handleProductChange} />
       </div>
-      {/* Seção de cadastro de produto (Placeholder) */}
-      <div className="col-span-5 lg:col-span-4 lg:mr-2">Cadastro de produto</div>
+      {/* Seção de cadastro de produto, recebe a props para remontar a tabela e o numero de produtos  */}
+      <div className="col-span-5 lg:col-span-4 lg:mr-2 "><NewProducts onProductChange={handleProductChange}/></div>
       {/* Seção de cadastro de categoria (Placeholder) */}
       <div className=" col-span-5 lg:col-span-4 lg:mr-2">Cadastro de categoria</div>
     </div>
