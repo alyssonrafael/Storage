@@ -31,7 +31,7 @@ const ProtectedLayout = () => {
         />
       )}
       {/* Barra superior para telas menores */}
-      <div className="bg-blaze-orange-500 w-screen lg:hidden flex justify-between items-center px-4 py-2 h-16 fixed top-0 left-0 right-0">
+      <div className="bg-blaze-orange-500 w-screen lg:hidden flex justify-between items-center px-4 py-2 h-16 fixed top-0 left-0 right-0 z-50">
         {/* Ícone do menu hamburguer */}
         <div onClick={toggleNavbar}>
           <FaBars className="text-white text-2xl cursor-pointer" />

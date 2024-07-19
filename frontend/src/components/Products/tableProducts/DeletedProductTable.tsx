@@ -12,7 +12,7 @@ const DeletedProductTable: React.FC<DeletedProductTableProps> = ({ deletedProduc
   return (
     <>
     {/* Título da tabela de produtos deletados */}
-      <h2 className="text-xl md:sticky md:top-0 bg-white text-red-500 font-medium mt-6 mb-4">
+      <h2 className="text-xl md:sticky md:top-0 z-10  bg-white text-red-500 font-medium mt-6 mb-4">
         Produtos Deletados
       </h2>
       {/* Tabela de produtos deletados */}

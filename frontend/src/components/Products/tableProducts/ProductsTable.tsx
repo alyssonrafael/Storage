@@ -17,7 +17,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
     <>
       {/* Título da tabela de produtos utilizáveis */}
       {/* Tabela de produtos */}
-      <h2 className="text-xl md:sticky md:top-0  bg-white text-green-500 font-medium mb-6">
+      <h2 className="text-xl md:sticky md:top-0 z-10  bg-white text-green-500 font-medium mb-6">
         Produtos utilizaveis
       </h2>
       <table className="min-w-full rounded-lg shadow-md mb-8">
