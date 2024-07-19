@@ -137,7 +137,7 @@ const TableCategories: React.FC<{ onProductChange: () => void }> = ({
       <h1 className="text-xl text-green-500">Tabela de disponiveis</h1>
       <table className="min-w-full">
         {/* heder da tabela */}
-        <thead className="bg-white sticky top-0 text-xs md:text-sm lg:text-base">
+        <thead className="bg-white sticky top-0 text-xs md:text-sm lg:text-base ">
           <tr>
             <th className="px-6 py-3 text-center font-semibold">ID</th>
             <th className="px-6 py-3 text-center font-semibold">Nome</th>
@@ -166,27 +166,31 @@ const TableCategories: React.FC<{ onProductChange: () => void }> = ({
               {/* coluna com as funçoes de ediçao e delete da categoria */}
               <td className="border-b-2 text-blaze-orange-500 border-blaze-orange-300">
                 {editingCategoryId === category.id ? (
-                  <div className="flex space-x-4">
-                    <FaCheck
-                      className="text-green-500 cursor-pointer"
-                      onClick={() => handleSaveClick(category.id)}
-                    />
-                    <FaX
-                      className="text-red-500 cursor-pointer"
-                      onClick={handleCancelClick}
-                    />
-                  </div>
+                  <button className="cursor-default">
+                    <div className="flex space-x-4">
+                      <FaCheck
+                        className="text-green-500 cursor-pointer"
+                        onClick={() => handleSaveClick(category.id)}
+                      />
+                      <FaX
+                        className="text-red-500 cursor-pointer"
+                        onClick={handleCancelClick}
+                      />
+                    </div>
+                  </button>
                 ) : (
-                  <div className="flex space-x-4">
-                    <FaPen
-                      className="text-yellow-500 cursor-pointer"
-                      onClick={() => handleEditClick(category)}
-                    />
-                    <FaTrash
-                      className="text-red-500 cursor-pointer"
-                      onClick={() => handleDeleteClick(category.id)}
-                    />
-                  </div>
+                  <button className="cursor-default">
+                    <div className="flex space-x-4">
+                      <FaPen
+                        className="text-yellow-500 cursor-pointer"
+                        onClick={() => handleEditClick(category)}
+                      />
+                      <FaTrash
+                        className="text-red-500 cursor-pointer"
+                        onClick={() => handleDeleteClick(category.id)}
+                      />
+                    </div>
+                  </button>
                 )}
               </td>
             </tr>

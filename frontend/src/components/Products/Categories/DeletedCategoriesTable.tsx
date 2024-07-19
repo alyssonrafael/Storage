@@ -142,27 +142,31 @@ const DeletedCategoriesTable: React.FC<{ onProductChange: () => void }> = ({
               {/* coluna com as funçoes de ediçao e restore da categoria */}
               <td className="border-b-2 text-blaze-orange-500 border-blaze-orange-300">
                 {editingCategoryId === category.id ? (
-                  <div className="flex space-x-4">
-                    <FaCheck
-                      className="text-green-500 cursor-pointer"
-                      onClick={() => handleSaveClick(category.id)}
-                    />
-                    <FaX
-                      className="text-red-500 cursor-pointer"
-                      onClick={handleCancelClick}
-                    />
-                  </div>
+                  <button className="cursor-default">
+                    <div className="flex space-x-4">
+                      <FaCheck
+                        className="text-green-500 cursor-pointer"
+                        onClick={() => handleSaveClick(category.id)}
+                      />
+                      <FaX
+                        className="text-red-500 cursor-pointer"
+                        onClick={handleCancelClick}
+                      />
+                    </div>
+                  </button>
                 ) : (
-                  <div className="flex space-x-4">
-                    <FaPen
-                      className="text-yellow-500 cursor-pointer"
-                      onClick={() => handleEditClick(category)}
-                    />
-                    <FaArrowUp
-                      className="text-green-500 cursor-pointer"
-                      onClick={() => handleRestoreClick(category.id)}
-                    />
-                  </div>
+                  <button className="cursor-default">
+                    <div className="flex space-x-4">
+                      <FaPen
+                        className="text-yellow-500 cursor-pointer"
+                        onClick={() => handleEditClick(category)}
+                      />
+                      <FaArrowUp
+                        className="text-green-500 cursor-pointer"
+                        onClick={() => handleRestoreClick(category.id)}
+                      />
+                    </div>
+                  </button>
                 )}
               </td>
             </tr>
