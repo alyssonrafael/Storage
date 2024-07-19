@@ -114,18 +114,19 @@ Essas são as rotas da minha API:
 | <kbd>PUT/http://localhost:3333/api/categoria/:id</kbd>         | atualização da categoria                 |
 | <kbd>PUT/http://localhost:3333/api/delete-categoria/:id</kbd>  | marcar categoria como excluida           |
 | <kbd>PUT/http://localhost:3333/api/restore-categoria/:id</kbd> | marca categoria como nao excluida        |
+| <kbd>PUT/http://localhost:3333/api/restore-categoria/:id</kbd> | marca categoria como nao excluida        |
 
 <h1>Produtos</h1>
 
-| Route                                                        | description                              |
-| ------------------------------------------------------------ | ---------------------------------------- |
-| <kbd>GET/http://localhost:3333/api/produtos</kbd>            | Retorna todos os produtos cadasstrados   |
-| <kbd>POST/http://localhost:3333/api/produto</kbd>            | responsavel por criar um novo produto    |
-| <kbd>GET/http://localhost:3333/api/produto/:id</kbd>         | lista produto expecifico com base no id  |
-| <kbd>PUT/http://localhost:3333/api/produto/:id</kbd>         | editar produto                           |
-| <kbd>PUT/http://localhost:3333/api/delete-produto/:id</kbd>  | marca produto como excluido              |
-| <kbd>PUT/http://localhost:3333/api/restore-produto/:id</kbd> | marca produto como nao excluido          |
-| <kbd>get/http://localhost:3333/api/produtos/count</kbd>      | conta o numero de produtos Não excluidos |
+| Route                                                            | description                                              |
+| ---------------------------------------------------------------- | -------------------------------------------------------- |
+| <kbd>GET/http://localhost:3333/api/produtos</kbd>                | Retorna todos os produtos cadasstrados                   |
+| <kbd>POST/http://localhost:3333/api/produto</kbd>                | responsavel por criar um novo produto                    |
+| <kbd>GET/http://localhost:3333/api/produto/:id</kbd>             | lista produto expecifico com base no id                  |
+| <kbd>PUT/http://localhost:3333/api/produto/:id</kbd>             | editar produto                                           |
+| <kbd>PUT/http://localhost:3333/api/delete-produto/:id</kbd>      | marca produto como excluido                              |
+| <kbd>PUT/http://localhost:3333/api/restore-produto/:id</kbd>     | marca produto como nao excluido                          |
+| <kbd>get/http://localhost:3333/api/categorias/:id/produtos</kbd> | conta o de produtos associados a categoria passada no id |
 
 <h1>Vendas</h1>
 

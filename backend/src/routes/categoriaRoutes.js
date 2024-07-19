@@ -6,6 +6,7 @@ const {
   updateCategory,
   deleteCategory,
   restoreCategory,
+  checkCategoryProducts,
 } = require("../controllers/categoriaController");
 // Criação de um novo roteador Express
 const router = express.Router();
@@ -21,5 +22,6 @@ router.put("/categoria/:id", updateCategory);
 router.put("/delete-categoria/:id", deleteCategory);
 //rota pra resturar categoria
 router.put("/restore-categoria/:id", restoreCategory);
-
+//rota para verificar quantos produtos estao associados a categoria
+router.get('/categorias/:id/produtos', checkCategoryProducts);
 module.exports = router;

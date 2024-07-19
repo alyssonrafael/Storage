@@ -28,7 +28,11 @@ const newCategory = async (req, res) => {
 // retorna todas as categorias
 const getCategories = async (req, res) => {
   try {
-    const categorias = await prisma.categoria.findMany();
+    const categorias = await prisma.categoria.findMany({
+      orderBy: {
+        id: 'asc', // Ordena em ordem crescente.
+      },
+    });
     res.status(200).json(categorias);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -129,6 +133,23 @@ const restoreCategory = async (req, res) => {
   }
 };
 
+// Função para verificar se uma categoria tem produtos associados
+const checkCategoryProducts = async (req, res) => {
+  const { id } = req.params; // Obtém o ID da categoria dos parâmetros da requisição
+  try {
+    // Verifica se existem produtos associados à categoria
+    const count = await prisma.produto.count({
+      where: {
+        categoriaId: Number(id),
+      },
+    });
+    // Retorna o numero de produtos associados e 0 caso contrário
+    res.status(200).json({ hasProducts: count > 0 ? count : 0 });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   newCategory,
   getCategories,
@@ -136,4 +157,5 @@ module.exports = {
   updateCategory,
   deleteCategory,
   restoreCategory,
+  checkCategoryProducts,
 };
