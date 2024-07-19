@@ -2,12 +2,13 @@ import { useState } from "react";
 import SubTitle from "../components/Products/SubTitle";
 import TableProducts from "../components/Products/tableProducts/TableProducts";
 import NewProducts from "../components/Products/NewProducts";
+import Categories from "../components/Products/Categories/CategoriesTable";
 
 const Products: React.FC = () => {
   // Estado para controlar a mudança de produtos
   const [productChange, setProductChange] = useState(false);
 
-  // Função para lidar com a mudança de produtos
+  // Função para lidar com a mudança de e categorias, usado nos useefect para que os componetes sejam atualizados quando o onProductChange muda para mander a consistencia de dados das 3 seçoes
   const handleProductChange = () => {
     setProductChange(!productChange);
   };
@@ -31,8 +32,8 @@ const Products: React.FC = () => {
       </div>
       {/* Seção de cadastro de produto, recebe a props para remontar a tabela e o numero de produtos  */}
       <div className="col-span-5 lg:col-span-4 lg:mr-2 "><NewProducts onProductChange={handleProductChange}/></div>
-      {/* Seção de cadastro de categoria (Placeholder) */}
-      <div className=" col-span-5 lg:col-span-4 lg:mr-2">Cadastro de categoria</div>
+      {/* Seção de cadastro de categoria, recebe a props para consistencia dos eementos */}
+      <div className=" col-span-5 lg:col-span-4 lg:mr-2 "><Categories onProductChange={handleProductChange}/></div>
     </div>
   );
 };

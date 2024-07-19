@@ -24,6 +24,8 @@ const TableProducts: React.FC<{ onProductChange: () => void }> = ({
   // Controle dos estados das mensagens de sucesso e erro
   const [mensagem, setMensagem] = useState({ sucesso: false, texto: "" });
   const [mensagemCount, setMensagemCount] = useState(0);
+  //estado para o carregamento dos dados
+  const [loading, setLoading] = useState(true);
 
   // Função do react-hook-form para gerenciamento do formulário
   const {
@@ -49,7 +51,11 @@ const TableProducts: React.FC<{ onProductChange: () => void }> = ({
         const responseCategorias = await axios.get<Categoria[]>(
           "http://localhost:3333/api/categorias"
         );
-        setCategorias(responseCategorias.data);
+        const filteredCategories = responseCategorias.data.filter(
+          (category) => !category.deleted
+        );//filtra as categorias que nao estao marcadas como deletadas
+        setCategorias(filteredCategories);//seta as categorias com as categorias filtradaas
+        setLoading(false); //cancela o loading e exibe os dados
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       }
@@ -197,6 +203,13 @@ const TableProducts: React.FC<{ onProductChange: () => void }> = ({
   const deletedProducts = filteredProducts.filter((product) => product.deleted);
   // Filtra produtos ativos (não deletados) a partir da lista de produtos filtrados
   const activeProducts = filteredProducts.filter((product) => !product.deleted);
+
+  if (loading)
+    return (
+      <p className="text-center text-2xl text-blaze-orange-500">
+        Carregando...
+      </p>
+    ); //se os dados ainda nao estiverem prontos exibe o loading
 
   return (
     <div className="p-6">

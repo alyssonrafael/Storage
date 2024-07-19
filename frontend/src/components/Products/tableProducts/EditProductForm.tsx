@@ -29,7 +29,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 }) => {
   return (
     // box do modal
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10"> {/* ajuste do z index*/}
       {/* Container para o formulário */}
       <div className="bg-white rounded-lg shadow-lg p-8 w-96 mx-4 md:mx-0">
         <h2 className="text-xl font-medium mb-4 text-blaze-orange-500">

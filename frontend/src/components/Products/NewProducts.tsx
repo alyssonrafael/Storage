@@ -34,14 +34,15 @@ const NewProducts: React.FC<{ onProductChange: () => void }> = ({
         const response = await axios.get(
           "http://localhost:3333/api/categorias"
         );
-        setCategorias(response.data);
+        const filteredCategories = response.data.filter((category: { deleted: boolean; }) => !category.deleted);//filtra as categorias que nao estao deletadas
+        setCategorias(filteredCategories);//seta a categoria com esse filtro
       } catch (error) {
         console.error("Erro ao buscar categorias", error);
       }
     };
 
     fetchCategorias();
-  }, []); //montado apenas uma vez
+  }, [onProductChange]); //montado quando o onProductChange muda para mander a consistencia de dados das 3 seçoes do componente pai
 
   const onSubmit = async (data: ProductsFormValues) => {
     //funçao para enviar o formulario

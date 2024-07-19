@@ -1,7 +1,8 @@
 // interfaces gerais
  export interface Categoria {
-    id: number;
-    nome: string;
+   id: number;
+   nome: string;
+   deleted?: boolean;
   }
 export interface Product {
     id: number;
