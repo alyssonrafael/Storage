@@ -81,6 +81,7 @@ const getVendas = async (req, res) => {
     // Recupera todas as vendas não deletadas
     const vendas = await prisma.venda.findMany({
       where: { deleted: false },
+      orderBy: { createdAt: 'desc' },
       include: {
         produtos: true, // Inclui os produtos em cada venda
         user: true, // Inclui o usuário que fez cada venda
