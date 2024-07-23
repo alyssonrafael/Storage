@@ -7,7 +7,9 @@ import MensagemCard from "../../MessageCard"; // Importa o componente para exibi
 import { SalesData, Sale, Product } from "../../utils/types"; // Importa os tipos para os dados de vendas e produtos
 
 // Componente principal que exibe todas as vendas e lida com ações como visualizar detalhes e deletar vendas
-const TableAllSales: React.FC = () => {
+const TableAllSales: React.FC<{ onSalesChange: () => void }> = ({
+  onSalesChange,
+}) => {
   
   // Estados para armazenar dados e controlar a interface
   const [salesData, setSalesData] = useState<SalesData>([]); // Armazena os dados das vendas
@@ -45,7 +47,7 @@ const TableAllSales: React.FC = () => {
 
     fetchSalesData(); // Chama a função para buscar os dados das vendas
     fetchProductsData(); // Chama a função para buscar os dados dos produtos
-  }, []);
+  }, [onSalesChange]);
 
   // Função para mostrar o modal com detalhes da venda
   const handleShowDetails = (sale: Sale) => {
@@ -72,6 +74,7 @@ const TableAllSales: React.FC = () => {
         setSalesData(salesData.filter((sale) => sale.id !== saleToDelete)); // Atualiza a lista de vendas removendo a venda excluída
         setShowDeleteModal(false); // Fecha o modal de confirmação de exclusão
         setMensagem({ sucesso: true, texto: "Venda excluída com sucesso" }); // Define a mensagem de sucesso
+        onSalesChange()
       } catch (error) {
         console.error("Erro ao deletar venda:", error); // Loga qualquer erro ocorrido
         setMensagem({ sucesso: false, texto: "Erro ao excluir venda" }); // Define a mensagem de erro

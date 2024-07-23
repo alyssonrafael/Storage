@@ -82,10 +82,10 @@ const NewProducts: React.FC<{ onProductChange: () => void }> = ({
           });
         }
         if (axiosError.response?.status === 500) {
-          setMensagem({ sucesso: false, texto: "Erro ao atualizar o produto" });
+          setMensagem({ sucesso: false, texto: "Erro ao criar o produto" });
         }
       }
-      throw new Error("Erro ao atualizar o produto");
+      throw new Error("Erro ao criar o produto");
     }
   };
 

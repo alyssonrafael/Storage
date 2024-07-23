@@ -86,3 +86,20 @@ export interface Product {
     updatedAt: string;
   }>;
 //fim dos types e interfaces usados pela tabela de produtos
+
+//intefaces das vendas
+
+export interface SaleProduct {
+  produtoId: number;
+  quantidade: number;
+}
+
+export interface SaleRequest {
+  userId: string;
+  produtos: SaleProduct[];
+  desconto: number;
+  observacao: string;
+  formaDePagamento: string;
+}
+
+//fim das intefaces das vendas
