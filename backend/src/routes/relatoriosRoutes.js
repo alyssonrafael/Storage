@@ -9,6 +9,8 @@ const {
   getProductsReport,
   getSalesReport,
   getUltimasVendas,
+  getVendasTendencia,
+  getSalesByPaymentMethod,
 } = require("../controllers/relatoriosController");
 // Criação de um novo roteador Express
 const router = express.Router();
@@ -30,5 +32,9 @@ router.get("/relatorios/produtos", getProductsReport);
 router.get('/relatorios/vendas', getSalesReport);
 // Rota para obter as últimas 4 vendas
 router.get('/ultimas-vendas', getUltimasVendas);
+//rota para tendencia de vendas
+router.get('/relatorios/tendencia-vendas', getVendasTendencia);
+//rota para pegar a quantidade de vendas por tipos de pagamento
+router.get('/relatorios/metodos-de-pagamento', getSalesByPaymentMethod);
 
 module.exports = router;

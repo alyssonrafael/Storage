@@ -369,7 +369,104 @@ const getUltimasVendas = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-  
+
+const getVendasTendencia = async (req, res) => {
+  try {
+    // Calcula a data de 6 meses atrás a partir da data atual
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    // Obtém todas as vendas que não foram deletadas e que ocorreram desde 6 meses atrás
+    const vendas = await prisma.venda.findMany({
+      where: {
+        deleted: false, // Filtra para incluir apenas vendas que não foram deletadas
+        createdAt: {
+          gte: sixMonthsAgo, // Inclui apenas vendas a partir da data calculada
+        }
+      },
+      select: {
+        createdAt: true, // Seleciona a data da venda
+        total: true // Seleciona o valor total da venda
+      }
+    });
+
+    // Agrupa as vendas por mês e ano
+    const vendasPorMes = vendas.reduce((acc, venda) => {
+      const date = new Date(venda.createdAt);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1; // Ajusta o mês para 1-12 (1 = Janeiro, 2 = Fevereiro, etc.)
+      const key = `${year}-${month.toString().padStart(2, '0')}`; // Cria uma chave no formato YYYY-MM
+
+      // Inicializa a chave no acumulador se ainda não existir
+      if (!acc[key]) {
+        acc[key] = 0;
+      }
+
+      // Certifica-se de que o valor total é um número e não é nulo
+      const valorTotal = venda.total !== null ? Number(venda.total) : 0;
+      acc[key] += valorTotal; // Soma o valor total da venda ao acumulador para o mês específico
+      return acc;
+    }, {});
+
+    // Ordena as chaves (meses) em ordem cronológica
+    const sortedKeys = Object.keys(vendasPorMes).sort();
+    // Formata as categorias como MM-YYYY para exibição no gráfico
+    const categories = sortedKeys.map(key => {
+      const [year, month] = key.split('-');
+      return `${month}-${year}`; // Formato MM-YYYY
+    });
+    // Formata os valores para 2 casas decimais
+    const values = sortedKeys.map(key => vendasPorMes[key].toFixed(2));
+
+    // Limita a quantidade de meses retornados para os últimos 6 meses
+    const maxMonths = 6;
+    const recentMonths = sortedKeys.slice(-maxMonths); // Obtém os últimos 6 meses
+    // Formata as categorias dos últimos 6 meses
+    const recentCategories = recentMonths.map(key => {
+      const [year, month] = key.split('-');
+      return `${month}-${year}`; // Formato MM-YYYY
+    });
+    // Formata os valores dos últimos 6 meses para 2 casas decimais
+    const recentValues = recentMonths.map(key => vendasPorMes[key].toFixed(2));
+    // Retorna as categorias e valores no formato JSON
+    res.status(200).json({ categories: recentCategories, values: recentValues });
+  } catch (error) {
+    // Em caso de erro, retorna o erro com status 500
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getSalesByPaymentMethod = async (req, res) => {
+  try {
+    // Busca todas as vendas que não foram deletadas do banco de dados,
+    // incluindo o método de pagamento para cada venda.
+    const vendas = await prisma.venda.findMany({
+      where: { deleted: false }, // Filtra apenas vendas não deletadas
+      select: {
+        formaDePagamento: true // Seleciona o campo que indica o método de pagamento
+      }
+    });
+    // Agrupa e conta o número de vendas para cada método de pagamento
+    const vendasPorMetodo = vendas.reduce((acc, venda) => {
+      const metodo = venda.formaDePagamento; // Obtém o método de pagamento da venda
+      if (!acc[metodo]) {
+        acc[metodo] = 0; // Inicializa o contador para o método de pagamento, se não existir
+      }
+      acc[metodo] += 1; // Incrementa o contador de vendas para o método de pagamento
+      return acc;
+    }, {});
+    // Ordena os métodos de pagamento e cria os arrays de categorias e valores
+    const categories = Object.keys(vendasPorMetodo); // Obtém os nomes dos métodos de pagamento
+    const values = Object.values(vendasPorMetodo); // Obtém as contagens de vendas para cada método
+    // Retorna os métodos de pagamento e suas respectivas contagens no formato JSON
+    res.status(200).json({ categories, values });
+  } catch (error) {
+    // Em caso de erro, retorna a mensagem de erro com status 500
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 
 
 module.exports = {
@@ -382,4 +479,6 @@ module.exports = {
   getProductsReport,
   getSalesReport,
   getUltimasVendas,
+  getVendasTendencia,
+  getSalesByPaymentMethod,
 };

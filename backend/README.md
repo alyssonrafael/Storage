@@ -150,6 +150,8 @@ Essas são as rotas da minha API:
 | <kbd>GET/http://localhost:3333/api/relatorios/produtos</kbd>                    | Retorna todos os produtos ou produtos filtrados com base nos parametros da requisiçao |
 | <kbd>GET/http://localhost:3333/api/relatorios/vendas</kbd>                      | Retorna todas as vendas ou as vendas filtrados com base nos parametros da requisiçao  |
 | <kbd>GET/http://localhost:3333/api/ultimas-vendas</kbd>                         | Retorna uma quantidade limitada de ulltimas vendas                                    |
+| <kbd>GET/http://localhost:3333/api/relatorios/tendencia-vendas</kbd>            | Retorna os ultimos 6 meses com os respectivos totais vendidos neles                   |
+| <kbd>GET/http://localhost:3333/api/relatorios/metodos-de-pagamento</kbd>        | Retorna uma quantidade de vendas por metodo de pagamneto                              |
 
 <h2 id="colab">✒️ Autor</h2>
 
