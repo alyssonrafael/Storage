@@ -84,6 +84,59 @@ const getAnnualSales = async (req, res) => {
   }
 };
 
+const getTopCategoryOfDay = async (req, res) => {
+  // Inicialização do início do dia
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0); // Define o horário como 00:00:00.000
+
+  // Inicialização do final do dia
+  const endOfDay = new Date(startOfDay);
+  endOfDay.setHours(23, 59, 59, 999); // Define o horário como 23:59:59.999
+
+  try {
+    // Consulta ao banco de dados para obter a categoria com mais vendas no dia
+    const topCategory = await prisma.vendaProduto.groupBy({
+      by: ["produtoId"],
+      _sum: {
+        quantidade: true,
+      },
+      where: {
+        venda: {
+          data: {
+            gte: startOfDay, // Data da venda maior ou igual ao início do dia
+            lte: endOfDay, // Data da venda menor ou igual ao final do dia
+          },
+          deleted: false, // Exclui vendas marcadas como excluídas
+        },
+      },
+      orderBy: {
+        _sum: {
+          quantidade: "desc", // Ordena pela quantidade de vendas em ordem decrescente
+        },
+      },
+      take: 1,
+    });
+
+    if (topCategory.length === 0) {
+      // Se não houver vendas, retorna categoria nula e total vendido zero
+      return res.status(200).json({ categoria: null, totalVendido: 0 });
+    }
+    // Obtém informações do produto associado à categoria
+    const produto = await prisma.produto.findUnique({
+      where: { id: topCategory[0].produtoId },
+      include: { categoria: true }, // Inclui informações da categoria
+    });
+    // Retorna a categoria e o total vendido
+    res.status(200).json({
+      categoria: produto.categoria.nome,
+      totalVendido: topCategory[0]._sum.quantidade,
+    });
+  } catch (error) {
+    // Tratamento de erros: retorna uma mensagem de erro
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const getTopCategoryOfMonth = async (req, res) => {
   // Inicialização do início do mês
   const startOfMonth = new Date();
@@ -139,6 +192,96 @@ const getTopCategoryOfMonth = async (req, res) => {
   }
 };
 
+const getTopCategoryOfYear = async (req, res) => {
+  // Inicialização do início do ano
+  const startOfYear = new Date();
+  startOfYear.setMonth(0, 1); // Define o mês como janeiro e o dia como 1
+  startOfYear.setHours(0, 0, 0, 0); // Define o horário como 00:00:00.000
+
+  // Inicialização do final do ano
+  const endOfYear = new Date(startOfYear);
+  endOfYear.setFullYear(startOfYear.getFullYear() + 1); // Avança para o próximo ano
+  endOfYear.setMonth(0, 0); // Define o mês como janeiro e o dia como 0 (último dia de dezembro)
+  endOfYear.setHours(23, 59, 59, 999); // Define o horário como 23:59:59.999
+
+  try {
+    // Consulta ao banco de dados para obter a categoria com mais vendas no ano
+    const topCategory = await prisma.vendaProduto.groupBy({
+      by: ["produtoId"],
+      _sum: {
+        quantidade: true,
+      },
+      where: {
+        venda: {
+          data: {
+            gte: startOfYear, // Data da venda maior ou igual ao início do ano
+            lte: endOfYear, // Data da venda menor ou igual ao final do ano
+          },
+          deleted: false, // Exclui vendas marcadas como excluídas
+        },
+      },
+      orderBy: {
+        _sum: {
+          quantidade: "desc", // Ordena pela quantidade de vendas em ordem decrescente
+        },
+      },
+      take: 1,
+    });
+
+    if (topCategory.length === 0) {
+      // Se não houver vendas, retorna categoria nula e total vendido zero
+      return res.status(200).json({ categoria: null, totalVendido: 0 });
+    }
+    // Obtém informações do produto associado à categoria
+    const produto = await prisma.produto.findUnique({
+      where: { id: topCategory[0].produtoId },
+      include: { categoria: true }, // Inclui informações da categoria
+    });
+    // Retorna a categoria e o total vendido
+    res.status(200).json({
+      categoria: produto.categoria.nome,
+      totalVendido: topCategory[0]._sum.quantidade,
+    });
+  } catch (error) {
+    // Tratamento de erros: retorna uma mensagem de erro
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+const getTotalSalesOfDay = async (req, res) => {
+  // Inicialização do início do dia
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0); // Define o horário como 00:00:00.000
+
+  // Inicialização do final do dia
+  const endOfDay = new Date(startOfDay);
+  endOfDay.setHours(23, 59, 59, 999); // Define o horário como 23:59:59.999
+
+  try {
+    // Consulta ao banco de dados para obter o total de vendas no dia
+    const totalSales = await prisma.venda.aggregate({
+      _sum: {
+        total: true, // Soma dos valores totais das vendas
+      },
+      where: {
+        data: {
+          gte: startOfDay, // Data da venda maior ou igual ao início do dia
+          lte: endOfDay, // Data da venda menor ou igual ao final do dia
+        },
+        deleted: false, // Exclui vendas marcadas como excluídas
+      },
+    });
+
+    res.status(200).json({ totalSales: totalSales._sum.total || 0 });
+    // Retorna o total de vendas ou 0 se não houver vendas no período
+  } catch (error) {
+    // Tratamento de erros: retorna uma mensagem de erro
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 const getTotalSalesOfMonth = async (req, res) => {
   // Inicialização do início do mês
   const startOfMonth = new Date();
@@ -172,6 +315,42 @@ const getTotalSalesOfMonth = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+const getTotalSalesOfYear = async (req, res) => {
+  // Inicialização do início do ano
+  const startOfYear = new Date();
+  startOfYear.setMonth(0, 1); // Define o mês como janeiro e o dia como 1
+  startOfYear.setHours(0, 0, 0, 0); // Define o horário como 00:00:00.000
+
+  // Inicialização do final do ano
+  const endOfYear = new Date(startOfYear);
+  endOfYear.setFullYear(startOfYear.getFullYear() + 1); // Avança para o próximo ano
+  endOfYear.setMonth(0, 0); // Define o mês como janeiro e o dia como 0 (último dia de dezembro)
+  endOfYear.setHours(23, 59, 59, 999); // Define o horário como 23:59:59.999
+
+  try {
+    // Consulta ao banco de dados para obter o total de vendas no ano
+    const totalSales = await prisma.venda.aggregate({
+      _sum: {
+        total: true, // Soma dos valores totais das vendas
+      },
+      where: {
+        data: {
+          gte: startOfYear, // Data da venda maior ou igual ao início do ano
+          lte: endOfYear, // Data da venda menor ou igual ao final do ano
+        },
+        deleted: false, // Exclui vendas marcadas como excluídas
+      },
+    });
+
+    res.status(200).json({ totalSales: totalSales._sum.total || 0 });
+    // Retorna o total de vendas ou 0 se não houver vendas no período
+  } catch (error) {
+    // Tratamento de erros: retorna uma mensagem de erro
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 const getProductsSoldByCategory = async (req, res) => {
   try {
@@ -473,8 +652,12 @@ module.exports = {
   getDailySales,
   getMonthlySales,
   getAnnualSales,
+  getTopCategoryOfDay ,
   getTopCategoryOfMonth,
+  getTopCategoryOfYear,
+  getTotalSalesOfDay,
   getTotalSalesOfMonth,
+  getTotalSalesOfYear,
   getProductsSoldByCategory,
   getProductsReport,
   getSalesReport,

@@ -1,6 +1,10 @@
 import GraphicCarousel from "../components/Reports/GraphicCarousel";
+import ValueSalesCard from "../components/Reports/ValueSalesCard";
+import TopCategoryCard from "../components/Reports/TopCategoryCard";
+import SalesCard from "../components/Reports/SalesCard";
 
-function Reports() {
+const Reports = () => {
+
   return (
     <div
       className="
@@ -20,9 +24,11 @@ function Reports() {
       <div className="col-span-5 lg:mr-2 p-6 rounded-lg shadow-2xl ">
         <GraphicCarousel/>
       </div>
-     {/* cadrs de informaçao (placeholder) */}
-      <div className=" col-span-5 lg:col-span-10 lg:mr-2 ">
-        cards
+     {/* cadrs de informações */}
+      <div className=" col-span-5 lg:col-span-10 lg:mr-2 lg:grid lg:grid-cols-3 lg:justify-center lg:items-center lg:space-x-4 space-y-6 lg:space-y-0 row-start-3 lg:row-auto">
+      <SalesCard/>
+      <ValueSalesCard/>
+      <TopCategoryCard/>
       </div>
     </div>
   );
