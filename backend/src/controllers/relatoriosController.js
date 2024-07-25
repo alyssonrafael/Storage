@@ -1,5 +1,10 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+//inportaçoes para gerar os relatorios em exel
+const fs = require("fs");
+const path = require("path");
+const ExcelJS = require("exceljs");
+const dayjs = require("dayjs");
 
 const getDailySales = async (req, res) => {
   // Inicialização das datas: startOfDay e endOfDay
@@ -248,7 +253,6 @@ const getTopCategoryOfYear = async (req, res) => {
   }
 };
 
-
 const getTotalSalesOfDay = async (req, res) => {
   // Inicialização do início do dia
   const startOfDay = new Date();
@@ -280,7 +284,6 @@ const getTotalSalesOfDay = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 const getTotalSalesOfMonth = async (req, res) => {
   // Inicialização do início do mês
@@ -351,7 +354,6 @@ const getTotalSalesOfYear = async (req, res) => {
   }
 };
 
-
 const getProductsSoldByCategory = async (req, res) => {
   try {
     // Consulta ao banco de dados para obter a quantidade total de cada produto vendido
@@ -401,120 +403,189 @@ const getProductsSoldByCategory = async (req, res) => {
   }
 };
 
-const getProductsReport = async (req, res) => {
-  // Obtém os parâmetros da consulta: categoriaId e disponivel
-  const { categoriaId, disponivel } = req.query;
+// Função para garantir que o diretório existe
+const ensureDirectoryExistence = (filePath) => {
+  const dirname = path.dirname(filePath);
+  if (!fs.existsSync(dirname)) {
+    fs.mkdirSync(dirname, { recursive: true });
+  }
+};
 
+const getProductsReport = async (req, res) => {
+  const { categoriaId, disponivel } = req.query; //recebe por parametro o id da categoria e o bollean disponivel
   try {
-    // Consulta ao banco de dados para obter informações dos produtos
-    const products = await prisma.produto.findMany({
+    // Preparando os filtros para a consulta
+    const filters = {};
+
+    if (categoriaId) {
+      filters.categoriaId = parseInt(categoriaId); // Convertendo para número inteiro
+    }
+
+    if (disponivel !== undefined) {
+      filters.disponivel = disponivel === "true"; // Convertendo string 'true'/'false' para booleano
+    }
+
+    // Consultando os produtos com base nos filtros
+    const produtos = await prisma.produto.findMany({
       where: {
-        categoriaId: categoriaId ? parseInt(categoriaId) : undefined,
-        disponivel: disponivel ? disponivel === "true" : undefined,
-        deleted: false, // Exclui produtos marcados como excluídos
+        ...filters,
+        deleted: false, //apenas produtos nao deletados
       },
       include: {
-        categoria: true, // Inclui informações da categoria
-        vendas: {
-          include: {
-            venda: true, // Inclui informações da venda associada
-          },
-        },
+        categoria: true, // Incluindo a informação da categoria
       },
     });
-    // Calcula informações para o relatório de produtos
-    const productsReport = products.map((product) => {
-      //intera sobre o array de product
-      // calcula a quantidade total vendida para o produto.
-      const totalSold = product.vendas.reduce(
-        //percorre o array de vendas associadas ao produto
-        (sum, vendaProduto) => sum + vendaProduto.quantidade, //Para cada venda, ele adiciona a quantidade vendida ao acumulador
-        0
-      );
-      //calculo da receita
-      const totalRevenue = product.vendas.reduce(
-        // calcula a receita total gerada pelo produto.
-        (sum, vendaProduto) =>
-          sum + vendaProduto.quantidade * vendaProduto.venda.total, //Multiplica a quantidade vendida, pelo preço total da venda
-        0
-      );
 
-      return {
-        id: product.id,
-        nome: product.nome,
-        preco: product.preco,
-        quantidadeEmEstoque: product.quantidade,
-        totalVendido: totalSold,
-        totalFaturado: totalRevenue,
-        disponivel: product.disponivel,
-        categoria: product.categoria.nome,
-        createdAt: product.createdAt,
-      };
+    // Geração do arquivo Excel
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Relatório de Produtos");
+
+    //montagem da tabela (titulos)
+    worksheet.columns = [
+      { header: "ID", key: "id", width: 10 },
+      { header: "Nome", key: "nome", width: 30 },
+      { header: "Categoria", key: "categoria", width: 30 },
+      { header: "Disponível", key: "disponivel", width: 15 },
+      { header: "Preço", key: "preco", width: 15 },
+      { header: "Quantidade em Estoque", key: "quantidade", width: 20 },
+    ];
+    //adicionando linhas a tabela
+    produtos.forEach((produto) => {
+      worksheet.addRow({
+        id: produto.id,
+        nome: produto.nome,
+        categoria: produto.categoria.nome,
+        disponivel: produto.disponivel ? "Sim" : "Não",
+        preco: produto.preco.toFixed(2),
+        quantidade: produto.quantidade,
+      });
     });
-    // Retorna o relatório de produtos
-    res.status(200).json(productsReport);
+
+    const filePath = path.join(__dirname, "temp", "relatorio-produtos.xlsx");
+    ensureDirectoryExistence(filePath); // Garante que o diretório existe
+    await workbook.xlsx.writeFile(filePath);
+
+    // Enviar o arquivo para download
+    res.download(filePath, "relatorio-produtos.xlsx", (err) => {
+      if (err) {
+        console.error("Erro ao baixar o arquivo:", err);
+        res.status(500).send("Erro ao baixar o arquivo.");
+      } else {
+        fs.unlinkSync(filePath); // Remove o arquivo após o download
+      }
+    });
   } catch (error) {
-    // Tratamento de erros: retorna uma mensagem de erro
-    res.status(500).json({ error: error.message });
+    console.error("Erro ao gerar relatório:", error);
+    res.status(500).json({ error: error.message }); // Retorna erro se ocorrer uma exceção
   }
 };
 
 const getSalesReport = async (req, res) => {
-  // Obtém os parâmetros da consulta: startDate, endDate e formaDePagamento
-  const { startDate, endDate, formaDePagamento } = req.query;
-  // Consulta ao banco de dados para obter informações das vendas
+  const { startDate, endDate, formaDePagamento } = req.query; // Extrai parâmetros da query string
+
   try {
+    // Converta startDate e endDate para o início e fim do dia, respectivamente
+    const start = startDate
+      ? dayjs(startDate).startOf("day").toDate()
+      : undefined;
+    const end = endDate ? dayjs(endDate).endOf("day").toDate() : undefined;
+
+    // Consultando as vendas com base nos filtros
     const vendas = await prisma.venda.findMany({
       where: {
         data: {
-          gte: startDate ? new Date(startDate) : undefined,
-          lte: endDate ? new Date(endDate) : undefined,
+          gte: start, // Maior ou igual a startDate
+          lte: end, // Menor ou igual a endDate
         },
-        deleted: false, // Exclui vendas marcadas como excluídas
-        formaDePagamento: formaDePagamento ? formaDePagamento : undefined,
+        deleted: false, // Exclui vendas marcadas como deletadas
+        formaDePagamento: formaDePagamento || undefined, // Filtro opcional por forma de pagamento
       },
       include: {
         produtos: {
           include: {
-            produto: true, // Inclui informações do produto associado
+            produto: true, // Inclui detalhes do produto
           },
         },
-        user: true, // Inclui informações do usuário associado à venda
+        user: true, // Inclui detalhes do usuário
       },
     });
-    // Calcula informações para o relatório de vendas
-    const salesReport = vendas.map((venda) => {
-      // Calcula a quantidade total de produtos vendidos
-      const totalProductsSold = venda.produtos.reduce(
-        (sum, vendaProduto) => sum + vendaProduto.quantidade,
-        0
-      );
-      // Cria um array com detalhes dos produtos vendidos
-      const productsDetails = venda.produtos.map((vendaProduto) => ({
-        produtoId: vendaProduto.produtoId,
-        nome: vendaProduto.produto.nome,
-        quantidade: vendaProduto.quantidade,
-        preco: vendaProduto.produto.preco,
-        total: vendaProduto.quantidade * vendaProduto.produto.preco,
-      }));
-      // Retorna um objeto com informações da venda
-      return {
-        id: venda.id,
-        data: venda.data,
-        total: venda.total,
-        desconto: venda.desconto,
-        user: venda.user.name,
-        formaDePagamento: venda.formaDePagamento,
-        totalProductsSold,
-        productsDetails,
-        observacao: venda.observacao,
-      };
-    });
-    // Retorna o relatório de vendas
-    res.status(200).json(salesReport);
+
+    // Verifica se o formato solicitado é Excel
+    if (req.query.formato === "excel") {
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Relatório de Vendas");
+
+      // Definindo as colunas da planilha
+      worksheet.columns = [
+        { header: "ID", key: "id", width: 10 },
+        { header: "Data", key: "data", width: 20 },
+        { header: "Total", key: "total", width: 15 },
+        { header: "Desconto", key: "desconto", width: 15 },
+        { header: "Usuário", key: "user", width: 20 },
+        { header: "Forma de Pagamento", key: "formaDePagamento", width: 20 },
+        {
+          header: "Total Produtos Vendidos",
+          key: "totalProductsSold",
+          width: 25,
+        },
+        { header: "Observação", key: "observacao", width: 30 },
+        { header: "Detalhes dos Produtos", key: "productsDetails", width: 50 },
+      ];
+
+      // Adicionando os dados das vendas à planilha
+      vendas.forEach((venda) => {
+        // Calcula o total de produtos vendidos
+        const totalProductsSold = venda.produtos.reduce(
+          (sum, vendaProduto) => sum + vendaProduto.quantidade,
+          0
+        );
+
+        // Detalhes dos produtos vendidos formatados como string
+        const productsDetailsStr = venda.produtos
+          .map((vendaProduto) => {
+            const produto = vendaProduto.produto;
+            return `Produto ID: ${produto.id}, Nome: ${
+              produto.nome
+            }, Quantidade: ${
+              vendaProduto.quantidade
+            }, Preço: R$${produto.preco.toFixed(2)}, Total: R$${(
+              vendaProduto.quantidade * produto.preco
+            ).toFixed(2)}`;
+          })
+          .join("; ");
+
+        // Adiciona uma linha à planilha
+        worksheet.addRow({
+          id: venda.id,
+          data: dayjs(venda.data).format("YYYY-MM-DD"), // Formata a data para 'YYYY-MM-DD'
+          total: venda.total.toFixed(2),
+          desconto: venda.desconto.toFixed(2),
+          user: venda.user.name,
+          formaDePagamento: venda.formaDePagamento,
+          totalProductsSold,
+          observacao: venda.observacao || "Nenhuma observação",
+          productsDetails: productsDetailsStr || "Nenhum detalhe disponível",
+        });
+      });
+
+      // Define o caminho do arquivo
+      const filePath = path.join(__dirname, "relatorio-vendas.xlsx");
+      await workbook.xlsx.writeFile(filePath); // Salva o arquivo Excel
+
+      // Envia o arquivo para download
+      res.download(filePath, "relatorio-vendas.xlsx", (err) => {
+        if (err) {
+          console.error("Erro ao baixar o arquivo:", err);
+          res.status(500).send("Erro ao baixar o arquivo.");
+        } else {
+          fs.unlinkSync(filePath); // Remove o arquivo após o download
+        }
+      });
+    } else {
+      res.status(400).send("Formato não suportado."); // Responde com erro se o formato não for suportado
+    }
   } catch (error) {
-    // Tratamento de erros: retorna uma mensagem de erro
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message }); // Retorna erro se ocorrer uma exceção
   }
 };
 
@@ -523,22 +594,26 @@ const getUltimasVendas = async (req, res) => {
     // Busca as últimas 4 vendas no banco de dados
     const vendas = await prisma.venda.findMany({
       where: { deleted: false }, // Filtra apenas vendas não deletadas
-      orderBy: { createdAt: 'desc' }, // Ordena por data de criação decrescente
+      orderBy: { createdAt: "desc" }, // Ordena por data de criação decrescente
       take: 5, // Limita o resultado a 5 registros
       include: {
-        produtos: { // Inclui os produtos associados à venda
+        produtos: {
+          // Inclui os produtos associados à venda
           include: {
-            produto: true // Inclui os detalhes do produto associado
-          }
+            produto: true, // Inclui os detalhes do produto associado
+          },
         },
         user: true, // Inclui os detalhes do usuário que realizou a venda
       },
     });
 
     // contagem de produtos vendidos a cada venda
-    const vendasComContagem = vendas.map(venda => ({
+    const vendasComContagem = vendas.map((venda) => ({
       ...venda,
-      totalProdutos: venda.produtos.reduce((total, prod) => total + prod.quantidade, 0)
+      totalProdutos: venda.produtos.reduce(
+        (total, prod) => total + prod.quantidade,
+        0
+      ),
     }));
 
     // Retorna as vendas encontradas em formato JSON com a contagem de produtos vendidos
@@ -561,12 +636,12 @@ const getVendasTendencia = async (req, res) => {
         deleted: false, // Filtra para incluir apenas vendas que não foram deletadas
         createdAt: {
           gte: sixMonthsAgo, // Inclui apenas vendas a partir da data calculada
-        }
+        },
       },
       select: {
         createdAt: true, // Seleciona a data da venda
-        total: true // Seleciona o valor total da venda
-      }
+        total: true, // Seleciona o valor total da venda
+      },
     });
 
     // Agrupa as vendas por mês e ano
@@ -574,7 +649,7 @@ const getVendasTendencia = async (req, res) => {
       const date = new Date(venda.createdAt);
       const year = date.getFullYear();
       const month = date.getMonth() + 1; // Ajusta o mês para 1-12 (1 = Janeiro, 2 = Fevereiro, etc.)
-      const key = `${year}-${month.toString().padStart(2, '0')}`; // Cria uma chave no formato YYYY-MM
+      const key = `${year}-${month.toString().padStart(2, "0")}`; // Cria uma chave no formato YYYY-MM
 
       // Inicializa a chave no acumulador se ainda não existir
       if (!acc[key]) {
@@ -590,25 +665,29 @@ const getVendasTendencia = async (req, res) => {
     // Ordena as chaves (meses) em ordem cronológica
     const sortedKeys = Object.keys(vendasPorMes).sort();
     // Formata as categorias como MM-YYYY para exibição no gráfico
-    const categories = sortedKeys.map(key => {
-      const [year, month] = key.split('-');
+    const categories = sortedKeys.map((key) => {
+      const [year, month] = key.split("-");
       return `${month}-${year}`; // Formato MM-YYYY
     });
     // Formata os valores para 2 casas decimais
-    const values = sortedKeys.map(key => vendasPorMes[key].toFixed(2));
+    const values = sortedKeys.map((key) => vendasPorMes[key].toFixed(2));
 
     // Limita a quantidade de meses retornados para os últimos 6 meses
     const maxMonths = 6;
     const recentMonths = sortedKeys.slice(-maxMonths); // Obtém os últimos 6 meses
     // Formata as categorias dos últimos 6 meses
-    const recentCategories = recentMonths.map(key => {
-      const [year, month] = key.split('-');
+    const recentCategories = recentMonths.map((key) => {
+      const [year, month] = key.split("-");
       return `${month}-${year}`; // Formato MM-YYYY
     });
     // Formata os valores dos últimos 6 meses para 2 casas decimais
-    const recentValues = recentMonths.map(key => vendasPorMes[key].toFixed(2));
+    const recentValues = recentMonths.map((key) =>
+      vendasPorMes[key].toFixed(2)
+    );
     // Retorna as categorias e valores no formato JSON
-    res.status(200).json({ categories: recentCategories, values: recentValues });
+    res
+      .status(200)
+      .json({ categories: recentCategories, values: recentValues });
   } catch (error) {
     // Em caso de erro, retorna o erro com status 500
     res.status(500).json({ error: error.message });
@@ -622,8 +701,8 @@ const getSalesByPaymentMethod = async (req, res) => {
     const vendas = await prisma.venda.findMany({
       where: { deleted: false }, // Filtra apenas vendas não deletadas
       select: {
-        formaDePagamento: true // Seleciona o campo que indica o método de pagamento
-      }
+        formaDePagamento: true, // Seleciona o campo que indica o método de pagamento
+      },
     });
     // Agrupa e conta o número de vendas para cada método de pagamento
     const vendasPorMetodo = vendas.reduce((acc, venda) => {
@@ -645,14 +724,11 @@ const getSalesByPaymentMethod = async (req, res) => {
   }
 };
 
-
-
-
 module.exports = {
   getDailySales,
   getMonthlySales,
   getAnnualSales,
-  getTopCategoryOfDay ,
+  getTopCategoryOfDay,
   getTopCategoryOfMonth,
   getTopCategoryOfYear,
   getTotalSalesOfDay,

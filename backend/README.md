@@ -139,23 +139,23 @@ Essas são as rotas da minha API:
 
 <h1>Relatorios</h1>
 
-| Route                                                                           | description                                                                           |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| <kbd>GET/http://localhost:3333/api/relatorios/vendas-dia</kbd>                  | Retorna todas as vendas do dia                                                        |
-| <kbd>GET/http://localhost:3333/api/relatorios/vendas-mes</kbd>                  | Retorna todas as vendas do mes                                                        |
-| <kbd>GET/http://localhost:3333/api/relatorios/vendas-ano</kbd>                  | Retorna todas as vendas do ano                                                        |
-| <kbd>GET/http://localhost:3333/api/relatorios/categoria-top-dia</kbd>           | Retorna a categoria mais vendida do dia                                               |
-| <kbd>GET/http://localhost:3333/api/relatorios/categoria-top-mes</kbd>           | Retorna a categoria mais vendida do mes                                               |
-| <kbd>GET/http://localhost:3333/api/relatorios/categoria-top-ano</kbd>           | Retorna a categoria mais vendida do ano                                               |
-| <kbd>GET/http://localhost:3333/api/relatorios/total-vendas-dia</kbd>            | Retorna o total de vendas no dia                                                      |
-| <kbd>GET/http://localhost:3333/api/relatorios/total-vendas-mes</kbd>            | Retorna o total de vendas no mes                                                      |
-| <kbd>GET/http://localhost:3333/api/relatorios/total-vendas-ano</kbd>            | Retorna o total de vendas no ano                                                      |
-| <kbd>GET/http://localhost:3333/api/relatorios/produtos-vendidos-categoria</kbd> | Retorna a quantidade de proddutos vendidos por categoria                              |
-| <kbd>GET/http://localhost:3333/api/relatorios/produtos</kbd>                    | Retorna todos os produtos ou produtos filtrados com base nos parametros da requisiçao |
-| <kbd>GET/http://localhost:3333/api/relatorios/vendas</kbd>                      | Retorna todas as vendas ou as vendas filtrados com base nos parametros da requisiçao  |
-| <kbd>GET/http://localhost:3333/api/ultimas-vendas</kbd>                         | Retorna uma quantidade limitada de ulltimas vendas                                    |
-| <kbd>GET/http://localhost:3333/api/relatorios/tendencia-vendas</kbd>            | Retorna os ultimos 6 meses com os respectivos totais vendidos neles                   |
-| <kbd>GET/http://localhost:3333/api/relatorios/metodos-de-pagamento</kbd>        | Retorna uma quantidade de vendas por metodo de pagamneto                              |
+| Route                                                                           | description                                                                                   |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| <kbd>GET/http://localhost:3333/api/relatorios/vendas-dia</kbd>                  | Retorna todas as vendas do dia                                                                |
+| <kbd>GET/http://localhost:3333/api/relatorios/vendas-mes</kbd>                  | Retorna todas as vendas do mes                                                                |
+| <kbd>GET/http://localhost:3333/api/relatorios/vendas-ano</kbd>                  | Retorna todas as vendas do ano                                                                |
+| <kbd>GET/http://localhost:3333/api/relatorios/categoria-top-dia</kbd>           | Retorna a categoria mais vendida do dia                                                       |
+| <kbd>GET/http://localhost:3333/api/relatorios/categoria-top-mes</kbd>           | Retorna a categoria mais vendida do mes                                                       |
+| <kbd>GET/http://localhost:3333/api/relatorios/categoria-top-ano</kbd>           | Retorna a categoria mais vendida do ano                                                       |
+| <kbd>GET/http://localhost:3333/api/relatorios/total-vendas-dia</kbd>            | Retorna o total de vendas no dia                                                              |
+| <kbd>GET/http://localhost:3333/api/relatorios/total-vendas-mes</kbd>            | Retorna o total de vendas no mes                                                              |
+| <kbd>GET/http://localhost:3333/api/relatorios/total-vendas-ano</kbd>            | Retorna o total de vendas no ano                                                              |
+| <kbd>GET/http://localhost:3333/api/relatorios/produtos-vendidos-categoria</kbd> | Retorna a quantidade de proddutos vendidos por categoria                                      |
+| <kbd>GET/http://localhost:3333/api/relatorios/produtos</kbd>                    | Retorna exel de todos os produtos ou produtos filtrados com base nos parametros da requisiçao |
+| <kbd>GET/http://localhost:3333/api/relatorios/vendas</kbd>                      | Retorna exel de todas as vendas ou as vendas filtrados com base nos parametros da requisiçao  |
+| <kbd>GET/http://localhost:3333/api/ultimas-vendas</kbd>                         | Retorna uma quantidade limitada de ulltimas vendas                                            |
+| <kbd>GET/http://localhost:3333/api/relatorios/tendencia-vendas</kbd>            | Retorna os ultimos 6 meses com os respectivos totais vendidos neles                           |
+| <kbd>GET/http://localhost:3333/api/relatorios/metodos-de-pagamento</kbd>        | Retorna uma quantidade de vendas por metodo de pagamneto                                      |
 
 <h2 id="colab">✒️ Autor</h2>
 

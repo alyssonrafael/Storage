@@ -2,6 +2,8 @@ import GraphicCarousel from "../components/Reports/GraphicCarousel";
 import ValueSalesCard from "../components/Reports/ValueSalesCard";
 import TopCategoryCard from "../components/Reports/TopCategoryCard";
 import SalesCard from "../components/Reports/SalesCard";
+import ProductsReportGenerator from "../components/Reports/GenerateReports/ProductsReport";
+import ReportGenerator from "../components/Reports/GenerateReports/ReportGenerator";
 
 const Reports = () => {
 
@@ -16,9 +18,13 @@ const Reports = () => {
       <div className="col-span-5 lg:col-span-10 mb-4">
         <h1 className="text-xl md:text-3xl mb-2">Relatorios e Dashboard</h1>
       </div>
-      {/* Seção para gerar ralatorios (placeholder)*/}
-      <div className="col-span-5 lg:col-span-5">
-        gerar
+      {/* Seção para gerar ralatorios*/}
+      <div className="col-span-5 lg:col-span-5 p-2 rounded-lg shadow-2xl ">
+        
+      <ReportGenerator/>
+      <hr className="border-2 border-dotted border-blaze-orange-500" />
+       <ProductsReportGenerator/>
+     
       </div>
     {/* seção com o carrousel com os graficos */}
       <div className="col-span-5 lg:mr-2 p-6 rounded-lg shadow-2xl ">
