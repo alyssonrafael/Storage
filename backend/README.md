@@ -101,7 +101,7 @@ Essas são as rotas da minha API:
 | --------------------------------------------------------- | ------------------------------------------------------------ |
 | <kbd>GET/http://localhost:3333/api/users</kbd>            | Retorna todas os usuarios cadastrados rota restrita ao admin |
 | <kbd>PATCH/http://localhost:3333/api/users/:id/role</kbd> | altera a Role do usuario restrito ao admin                   |
-| <kbd>PUT/http://localhost:3333/api/users/:id</kbd>        | atualização do nome todos tem acesso                         |
+| <kbd>PUT/http://localhost:3333/api/users/:id</kbd>        | atualização do nome senha e email todos tem acesso           |
 | <kbd>DELETE/http://localhost:3333/api/users/:id</kbd>     | Exclusão de usuario todos tem acesso                         |
 | <kbd>GET/http://localhost:3333/api/users/:id</kbd>        | Buscar usuario com base no id                                |
 

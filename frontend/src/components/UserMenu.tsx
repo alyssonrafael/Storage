@@ -47,7 +47,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ toggleMenuNav }) => {
           .catch((error) => console.error("Erro ao buscar usuário:", error)); // Trata erros na requisição
       }
     }
-  }, []);
+  }, [user]); //monitorarndo o user para quando atualizar o nome ele tambem ser atualizado
 
   // Função para fazer logout
   const handleLogout = () => {

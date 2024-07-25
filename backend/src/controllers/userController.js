@@ -1,19 +1,47 @@
 const { PrismaClient } = require("@prisma/client"); //orm para interaçao com o banco de dados
 const hashPassword = require("../utils/hashPassword");
+const bcrypt = require('bcrypt');
 //instanciaçao para interagir com o banco de dados
 const prisma = new PrismaClient();
 
 // Controlador para atualizar informaçoes de um usuário
 const updateUser = async (req, res) => {
   const userId = req.params.userId;
-  const { name, email, password } = req.body;
-
-  const hashedPassword = await hashPassword(password);
+  const { name, email, currentPassword, newPassword } = req.body;
 
   try {
+    // Buscar o usuário no banco de dados
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    // Verificar a senha atual, se fornecida
+    if (currentPassword) {
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ error: "Senha atual incorreta." });
+      }
+    }
+
+    // Preparar os dados para atualização
+    const updateData = {
+      name,
+      email,
+    };
+
+    // Atualizar a senha, se uma nova senha for fornecida
+    if (newPassword) {
+      updateData.password = await hashPassword(newPassword);
+    }
+
+    // Atualizar o usuário no banco de dados
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: { name, email, password: hashedPassword },
+      data: updateData,
     });
 
     res.json(updatedUser);
