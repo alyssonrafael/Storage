@@ -14,7 +14,7 @@ const prisma = new PrismaClient();
 
 // Middlewares
 app.use(cors({
-  origin: 'http://localhost:4173/', // Permitir meu front end local de build
+  origin: 'http://localhost:4173', // Permitir meu front end local de build
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], // Métodos permitidos
   allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
 }));
