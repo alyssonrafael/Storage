@@ -13,9 +13,7 @@ const app = express();
 const prisma = new PrismaClient();
 
 // Middlewares
-app.use(cors({
-  origin: 'https://storage-frontend-eight.vercel.app', // Adicione a URL do frontend aqui
-}));
+app.use(cors());
 app.use(express.json());
 
 // Routes
