@@ -11,6 +11,7 @@ import Sales from "./pages/Sales";
 import Reports from "./pages/Reports";
 import AccountEditing from "./pages/AccountEditing";
 import About from "./pages/About";
+import UserManagement from "./pages/UserManagement";
 
 import ProtectedLayout from "./components/ProtectedLayout"; // Importe o layout protegido
 
@@ -50,8 +51,16 @@ const AppRouter: React.FC = () => (
         <Route
           path="/reports"
           element={
-            <ProtectedRoute acessControl={["USER", "ADMIN"]}>
+            <ProtectedRoute acessControl={["ADMIN"]}>
               <Reports />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/userManagement"
+          element={
+            <ProtectedRoute acessControl={["ADMIN"]}>
+              <UserManagement />
             </ProtectedRoute>
           }
         />

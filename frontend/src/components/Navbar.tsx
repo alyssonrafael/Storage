@@ -6,17 +6,18 @@ import {
   FaChartSimple,
   FaCircleQuestion,
 } from "react-icons/fa6"; // Importa ícones do react-icons/fa6
-import { FaTimes } from "react-icons/fa"; // Importa ícone do react-icons/fa
+import { FaTimes, FaUserShield  } from "react-icons/fa"; // Importa ícone do react-icons/fa
 import UserMenu from "./UserMenu"; //inportaçao do user menu
 
 // Interface das props passadas para o componente Navbar
 interface NavbarProps {
     isMenuOpen: boolean
     toggleMenu: () => void
+    user: string;
 }
 
 // Componente funcional da Navbar recebe duas props uma para gerenciar se o menu esta aberto e outra que muda o estado do menu
-const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, toggleMenu }) => {
+const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, toggleMenu, user }) => {
   return (
 
     <div className="flex-col h-full py-10 bg-blaze-orange-500 shadow lg:min-w-44 ">
@@ -61,16 +62,30 @@ const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, toggleMenu }) => {
                 <span>Vendas</span>
               </Link>
             </li>
-            <li className="rounded-sm">
-              <Link
-                to="/reports"
-                className="flex items-center p-2 space-x-3 text-white hover:translate-x-2 duration-300"
-                onClick={toggleMenu}
-              >
-                <FaChartSimple className="w-8 h-8 text-gray-700" />
-                <span>Relatórios</span>
-              </Link>
-            </li>
+            {user === 'ADMIN' && (
+              <li className="rounded-sm">
+                <Link
+                  to="/reports"
+                  className="flex items-center p-2 space-x-3 text-white hover:translate-x-2 duration-300"
+                  onClick={toggleMenu}
+                >
+                  <FaChartSimple className="w-8 h-8 text-gray-700" />
+                  <span>Relatórios</span>
+                </Link>
+              </li>
+            )}
+            {user === 'ADMIN' && (
+              <li className="rounded-sm">
+                <Link
+                  to="/userManagement"
+                  className="flex items-center p-2 space-x-3 text-white hover:translate-x-2 duration-300"
+                  onClick={toggleMenu}
+                >
+                  <FaUserShield className="w-8 h-8 text-gray-700" />
+                  <span>Usuários</span>
+                </Link>
+              </li>
+            )}
             <li className="rounded-sm">
               <Link
                 to="/about"

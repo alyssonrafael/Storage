@@ -1,13 +1,23 @@
-import { useState } from "react"; // import para controle de estado
+import { useEffect, useState } from "react"; // import para controle de estado
 import { Outlet } from "react-router-dom"; //importando o outlet para identificar onde as rotas filhas seeram apresentadas
 import Navbar from "./Navbar"; //componente navbar
 import { FaBars } from "react-icons/fa"; //icone do react/fa
 import logoImage from "/Storage.svg"; // Importa a imagem do logo
 import { useMediaQuery } from "react-responsive"; // Importa o hook para media queries
+import { decodeToken } from "./utils/tokenUtils";
 
 const ProtectedLayout = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false); // Estado para controlar a visibilidade da navbar
   const isMobile = useMediaQuery({ maxWidth: 1023 }); // Define o ponto de corte para telas móveis
+  const [userRole, setUserRole] = useState("")
+  // Efeito para buscar dados do usuário ao montar o componente
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = decodeToken(token);
+      setUserRole(decoded.role) //pega a "role" do usuario e seta no use role para passar como props na navbar
+    }
+  }, []);
 
   const toggleNavbar = () => {
     setIsNavbarOpen(!isNavbarOpen); // Alterna o estado da navbar
@@ -21,7 +31,7 @@ const ProtectedLayout = () => {
     <div className="lg:grid lg:grid-cols-12 lg:gap-5 lg:w-screen min-h-screen">
       {/* Navbar visível em telas maiores */}
       <div className="lg:block hidden lg:col-span-2">
-        <Navbar isMenuOpen={isNavbarOpen} toggleMenu={closeNavbar} />
+        <Navbar isMenuOpen={isNavbarOpen} toggleMenu={closeNavbar} user={userRole} />
       </div>
       {/* Overlay para tela escura em telas móveis */}
       {isMobile && isNavbarOpen && (
@@ -51,7 +61,7 @@ const ProtectedLayout = () => {
         }`}
       >
         {/* repassa a funçao e o estado para a nav bar */}
-        <Navbar isMenuOpen={isNavbarOpen} toggleMenu={closeNavbar} />
+        <Navbar isMenuOpen={isNavbarOpen} toggleMenu={closeNavbar} user={userRole} />
       </div>
       {/* Conteúdo principal */}
       <div className="lg:mt-16 lg:col-span-10 mb-8 mt-24 mx-5 lg:my-0 lg:mx-0 lg:pl-2">
