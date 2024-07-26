@@ -13,11 +13,7 @@ const app = express();
 const prisma = new PrismaClient();
 
 // Middlewares
-app.use(cors({
-  origin: ["http://localhost:5173", "https://storage-frontend-eight.vercel.app" ], // Permitir meu front end local e o hospedado na vercel
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], // Métodos permitidos
-  allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
-}));
+app.use(cors());
 app.use(express.json());
 
 // Routes
