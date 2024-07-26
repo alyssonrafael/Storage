@@ -4,6 +4,7 @@ import axios, { AxiosError } from "axios";
 import { decodeToken } from "../utils/tokenUtils";
 import ConfirmationModal from "../EditConfirmationModal";
 import MensagemCard from "../MessageCard";
+import api from "../../api";
 
 // Interface que define a estrutura dos dados do formulário
 interface FormData {
@@ -45,8 +46,8 @@ const EditAccountForm: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        axios
-          .get(`http://localhost:3333/api/user/${decoded.userId}`, config)
+        api
+          .get(`/user/${decoded.userId}`, config)
           .then((response) => {
             const user = response.data;
             setUserId(user.id);
@@ -82,8 +83,8 @@ const EditAccountForm: React.FC = () => {
       };
       try {
         // Envia uma requisição PUT para atualizar o usuário
-        await axios.put(
-          `http://localhost:3333/api/users/${userId}`,
+        await api.put(
+          `/users/${userId}`,
           {
             name: data.name,
             email: data.email,

@@ -5,9 +5,9 @@ import {
   FaArrowRightToBracket,
 } from "react-icons/fa6"; // Importa ícones do react-icons/fa6
 import { decodeToken } from "./utils/tokenUtils"; // Importa a função para decodificar o token
-import axios from "axios"; // Importa Axios para fazer requisições HTTP
 import { useState, useEffect, useRef } from "react"; // Importa hooks do React
 import { useNavigate, Link } from "react-router-dom"; // Importa funções para navegação dinâmica
+import api from "../api";
 
 // Interface do usuário
 interface User {
@@ -38,8 +38,8 @@ const UserMenu: React.FC<UserMenuProps> = ({ toggleMenuNav }) => {
             Authorization: `Bearer ${token}`, // Configura o cabeçalho da requisição com o token
           },
         };
-        axios
-          .get(`http://localhost:3333/api/user/${decoded.userId}`, config) // Faz a requisição para obter os dados do usuário
+        api
+          .get(`/user/${decoded.userId}`, config) // Faz a requisição para obter os dados do usuário
           .then((response) => {
             const { name, role } = response.data;
             setUser({ name, role }); // Define o estado do usuário
@@ -47,7 +47,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ toggleMenuNav }) => {
           .catch((error) => console.error("Erro ao buscar usuário:", error)); // Trata erros na requisição
       }
     }
-  }, [user]); //monitorarndo o user para quando atualizar o nome ele tambem ser atualizado
+  }, [isMenuOpen]); //vai monitorar a abrtura do menu para que possa remontar e assim remontar o componente se houver alguma alteraçao no conteudo ele sera corretamente passado
 
   // Função para fazer logout
   const handleLogout = () => {

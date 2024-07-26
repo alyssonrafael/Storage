@@ -3,7 +3,7 @@ import "slick-carousel/slick/slick.css"; // Importa o estilo padrão do carrosse
 import "slick-carousel/slick/slick-theme.css"; // Importa o tema padrão do carrossel
 import Card from './Card'; // Importa o componente Card que será usado no carrossel
 import { useEffect, useState } from 'react'; // Importa useEffect e useState do React
-import axios from 'axios'; // Importa a biblioteca axios para fazer requisições HTTP
+import api from '../../api';
 
 // Componente principal TopCategoryCard
 const TopCategoryCard = () => {
@@ -17,9 +17,9 @@ const TopCategoryCard = () => {
     try {
       // Faz requisições para obter os dados das categorias top do dia, mês e ano
       const [dayResponse, monthResponse, yearResponse] = await Promise.all([
-        axios.get('http://localhost:3333/api/relatorios/categoria-top-dia'),
-        axios.get('http://localhost:3333/api/relatorios/categoria-top-mes'),
-        axios.get('http://localhost:3333/api/relatorios/categoria-top-ano')
+        api.get('/relatorios/categoria-top-dia'),
+        api.get('/relatorios/categoria-top-mes'),
+        api.get('/relatorios/categoria-top-ano')
       ]);
 
       // Define os estados com os dados obtidos

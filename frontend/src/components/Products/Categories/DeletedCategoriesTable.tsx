@@ -3,6 +3,7 @@ import axios from "axios";
 import { Categoria } from "../../utils/types";
 import { FaPen, FaCheck, FaX, FaArrowUp } from "react-icons/fa6";
 import MensagemCard from "../../MessageCard";
+import api from "../../../api";
 
 // componente funcional da tabela de categorias deletadas
 const DeletedCategoriesTable: React.FC<{ onProductChange: () => void }> = ({
@@ -25,8 +26,8 @@ const DeletedCategoriesTable: React.FC<{ onProductChange: () => void }> = ({
     // Função para buscar categorias da API
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3333/api/categorias"
+        const response = await api.get(
+          "/categorias"
         );
         // Filtra categorias com deleted: true
         const filteredCategories = response.data.filter(
@@ -55,7 +56,7 @@ const DeletedCategoriesTable: React.FC<{ onProductChange: () => void }> = ({
     //
     try {
       // Tenta atualizar a categoria na API com o novo nome
-      await axios.put(`http://localhost:3333/api/categoria/${id}`, {
+      await api.put(`/categoria/${id}`, {
         nome: editName,
       });
       // Atualiza o estado local com o novo nome da categoria atualizada
@@ -93,7 +94,7 @@ const DeletedCategoriesTable: React.FC<{ onProductChange: () => void }> = ({
     setMensagemCount(mensagemCount + 1);
     try {
       // tenta fazer requisicao para rota que muda o deleted da categoria para false
-      await axios.put(`http://localhost:3333/api/restore-categoria/${id}`);
+      await api.put(`/restore-categoria/${id}`);
       setCategories((prevCategories) =>
         prevCategories.filter((category) => category.id !== id)
       );

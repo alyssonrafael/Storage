@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import MensagemCard from "../../MessageCard";
+import api from "../../../api";
 
 // interface com os valores que o formulario ira receer
 interface CategorieFormValues {
@@ -31,7 +32,7 @@ const FormNewCategorie: React.FC<{ onProductChange: () => void }> = ({
 
     // Requisição post para fazer cadastro no banco de dados
     try {
-      await axios.post("http://localhost:3333/api/categoria", data);
+      await api.post("/categoria", data);
       // Mensagem de sucesso caso tudo ocorra bem
       setMensagem({
         sucesso: true,

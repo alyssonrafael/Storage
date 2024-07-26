@@ -1,7 +1,7 @@
 import { useState } from "react";
-import axios from "axios";
 import { saveAs } from "file-saver";
 import { BsFileEarmarkBarGraph } from "react-icons/bs";
+import api from "../../../api";
 
 const ReportGenerator = () => {
   // Estados para armazenar os valores dos inputs
@@ -13,8 +13,8 @@ const ReportGenerator = () => {
   const handleGenerateReport = async () => {
     try {
       // Faz uma requisição GET para gerar o relatório de vendas
-      const response = await axios.get(
-        "http://localhost:3333/api/relatorios/vendas",
+      const response = await api.get(
+        "/relatorios/vendas",
         {
           params: {
             startDate, // Data inicial do relatório

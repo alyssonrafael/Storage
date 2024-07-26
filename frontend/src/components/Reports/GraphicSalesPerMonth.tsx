@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts'; // Importa o componente Chart da biblioteca react-apexcharts
-import axios from 'axios'; // Importa o axios para fazer requisições HTTP
 import { ApexOptions } from 'apexcharts'; // Importa o tipo ApexOptions para as opções do gráfico
+import api from '../../api';
 
 const GraphicSalesPerMonth = () => {
   // Estado para as opções do gráfico, usando o tipo ApexOptions para garantir que as opções estejam corretas
@@ -44,7 +44,7 @@ const GraphicSalesPerMonth = () => {
     const fetchData = async () => {
       try {
         // Faz uma requisição GET para buscar os dados do gráfico
-        const response = await axios.get('http://localhost:3333/api/relatorios/tendencia-vendas'); 
+        const response = await api.get('/relatorios/tendencia-vendas'); 
         const data = response.data;
 
         // Formata valores com 2 casas decimais

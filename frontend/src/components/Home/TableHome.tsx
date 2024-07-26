@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react"; // Importa React e hooks de estado e efeito
-import axios from "axios"; // Importa axios para fazer requisições HTTP
 import { FiPrinter } from "react-icons/fi"; // Importa o ícone de impressora
 import { PDFDownloadLink } from "@react-pdf/renderer"; // Importa o componente para gerar links de download de PDFs
 import SalesPDF from "../PDFs/SalesPDF"; // Importa o componente PDF para gerar o relatório
 import { SalesData } from "../utils/types"; // Importa o tipo SalesData
+import api from "../../api";
 
 const TableHome: React.FC = () => {
   const [data, setData] = useState<SalesData>([]); // Estado para armazenar os dados das vendas
@@ -13,8 +13,8 @@ const TableHome: React.FC = () => {
     const fetchData = async () => {
       try {
         // Faz a requisição para obter os dados das últimas vendas
-        const response = await axios.get<SalesData>(
-          "http://localhost:3333/api/ultimas-vendas"
+        const response = await api.get<SalesData>(
+          "/ultimas-vendas"
         );
         setData(response.data); // Atualiza o estado com os dados recebidos
         setLoading(false); // Define o estado de carregamento como falso

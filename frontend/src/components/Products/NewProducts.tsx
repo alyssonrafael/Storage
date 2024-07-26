@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import MensagemCard from "../MessageCard";
 import { Categoria } from "../utils/types";
+import api from "../../api";
 //interface com os valores necessarios para criar um novo produto
 interface ProductsFormValues {
   nome: string;
@@ -31,8 +32,8 @@ const NewProducts: React.FC<{ onProductChange: () => void }> = ({
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3333/api/categorias"
+        const response = await api.get(
+          "/categorias"
         );
         const filteredCategories = response.data.filter((category: { deleted: boolean; }) => !category.deleted);//filtra as categorias que nao estao deletadas
         setCategorias(filteredCategories);//seta a categoria com esse filtro
@@ -56,8 +57,8 @@ const NewProducts: React.FC<{ onProductChange: () => void }> = ({
 
     // Requisição post para fazer cadastro no banco de dados
     try {
-      await axios.post(
-        "http://localhost:3333/api/produto",
+      await api.post(
+        "/produto",
         dataComDisponibilidade
       );
 

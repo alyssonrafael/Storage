@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { saveAs } from 'file-saver';
 import { BsFileEarmarkBarGraph } from "react-icons/bs";
+import api from '../../../api';
 
 const ProductsReportGenerator = () => {
   // Estados para armazenar os valores dos inputs e a lista de categorias
@@ -13,7 +13,7 @@ const ProductsReportGenerator = () => {
     // Função para buscar categorias
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get('http://localhost:3333/api/categorias'); // Faz uma requisição GET para obter as categorias
+        const response = await api.get('/categorias'); // Faz uma requisição GET para obter as categorias
         setCategorias(response.data); // Atualiza o estado com as categorias obtidas
       } catch (error) {
         console.error('Erro ao buscar categorias:', error); // Exibe erro no console caso ocorra
@@ -26,7 +26,7 @@ const ProductsReportGenerator = () => {
   const handleGenerateReport = async () => {
     try {
       // Faz uma requisição GET para gerar o relatório de produtos
-      const response = await axios.get('http://localhost:3333/api/relatorios/produtos', {
+      const response = await api.get('/relatorios/produtos', {
         params: {
           categoriaId: categoriaId ? parseInt(categoriaId) : undefined, // Converte categoriaId para número inteiro se estiver definido
           disponivel: disponivel !== '' ? disponivel === 'true' : undefined, // Converte disponivel para booleano se estiver definido

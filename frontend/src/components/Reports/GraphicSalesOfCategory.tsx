@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import Chart from 'react-apexcharts';
-import axios from 'axios';
 import { ApexOptions } from 'apexcharts';
+import api from '../../api';
 
 // Define o tipo dos dados esperados da API
 interface CategorySalesData {
@@ -67,7 +67,7 @@ class GraphicSalesOfCategory extends Component<object, State> {
   // Método chamado após o componente ser montado
   async componentDidMount() {
     try {
-      const response = await axios.get<CategorySalesData>('http://localhost:3333/api/relatorios/produtos-vendidos-categoria'); 
+      const response = await api.get<CategorySalesData>('/relatorios/produtos-vendidos-categoria'); 
       const data = response.data;
 
       // Prepara dados para o gráfico

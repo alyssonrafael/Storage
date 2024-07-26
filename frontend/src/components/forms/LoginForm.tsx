@@ -1,8 +1,8 @@
-import axios from "axios"; //axios para requisiçoes no backend
 import { useForm } from "react-hook-form"; //utilizando o useform para um form mais linmpo e performatico
 import { useNavigate } from "react-router-dom"; //usenavigate para navegar entre paginas
 import React, { useState } from "react"; //importaçao hook para estados
 import MensagemCard from "../MessageCard"; //inportaçao do componente de mensagem
+import api from "../../api";
 
 //interface para os tipos do inputs do form
 interface LoginFormValues {
@@ -31,7 +31,7 @@ const LoginForm: React.FC = () => {
     setMensagemCount(mensagemCount + 1);
     try {
       // Realiza uma requisição POST para a API de login com o email e senha.
-      const response = await axios.post("http://localhost:3333/api/login", {
+      const response = await api.post("/login", {
         email: data.email,
         password: data.password,
       });

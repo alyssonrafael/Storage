@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"; //estado e efeito para o componente
-import axios from "axios"; //axios para requisiçoes
 import { PiShoppingCartLight, PiCheck } from "react-icons/pi"; //icones do react-icons
 import {
   Categoria,
@@ -17,6 +16,7 @@ import DiscountInput from "./DiscountInput";
 import PaymentMethodSelector from "./PaymentmethodSelector";
 import SaleSummary from "./SaleSummary";
 import CategorySelector from "./CategorySelector";
+import api from "../../../api";
 
 // Componente principal para criação de vendas
 const CreateSale: React.FC<{ onSalesChange: () => void }> = ({
@@ -60,8 +60,8 @@ const CreateSale: React.FC<{ onSalesChange: () => void }> = ({
             Authorization: `Bearer ${token}`,
           },
         };
-        axios
-          .get(`http://localhost:3333/api/user/${decoded.userId}`, config)
+        api
+          .get(`/user/${decoded.userId}`, config)
           .then((response) => {
             setUserId(response.data.id);
           })
@@ -73,8 +73,8 @@ const CreateSale: React.FC<{ onSalesChange: () => void }> = ({
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get<Product[]>(
-          "http://localhost:3333/api/produtos"
+        const response = await api.get<Product[]>(
+          "/produtos"
         );
         setProducts(response.data);
       } catch (error) {
@@ -84,8 +84,8 @@ const CreateSale: React.FC<{ onSalesChange: () => void }> = ({
 
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get<Categoria[]>(
-          "http://localhost:3333/api/categorias"
+        const response = await api.get<Categoria[]>(
+          "/categorias"
         );
         // Filtra as categorias para manter apenas aquelas com deleted: false
         const filteredCategorias = response.data.filter(
@@ -238,7 +238,7 @@ const CreateSale: React.FC<{ onSalesChange: () => void }> = ({
     }
     try {
       // Tenta enviar a solicitação de venda para o servidor
-      await axios.post("http://localhost:3333/api/vendas", saleRequest);
+      await api.post("/vendas", saleRequest);
       // Reseta os estados do formulário após a venda ser criada com sucesso
       setCart([]);
       setSelectedProduct(null);

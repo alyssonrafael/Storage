@@ -6,6 +6,7 @@ import DeletedProductTable from "./DeletedProductTable";
 import EditProductForm from "./EditProductForm";
 import MensagemCard from "../../MessageCard";
 import { Categoria, ProductForm, ArrayProductData } from "../../utils/types";
+import api from "../../../api";
 
 const TableProducts: React.FC<{ onProductChange: () => void }> = ({
   onProductChange,
@@ -40,16 +41,16 @@ const TableProducts: React.FC<{ onProductChange: () => void }> = ({
     const fetchData = async () => {
       // Busca os produtos
       try {
-        const responseProdutos = await axios.get<ArrayProductData>(
-          "http://localhost:3333/api/produtos"
+        const responseProdutos = await api.get<ArrayProductData>(
+          "/produtos"
         );
         const sortedProducts = responseProdutos.data.sort(
           (a, b) => a.id - b.id
         ); //ordenaçao com base no id
         setData(sortedProducts);
         // Busca as categorias
-        const responseCategorias = await axios.get<Categoria[]>(
-          "http://localhost:3333/api/categorias"
+        const responseCategorias = await api.get<Categoria[]>(
+          "/categorias"
         );
         const filteredCategories = responseCategorias.data.filter(
           (category) => !category.deleted
@@ -71,7 +72,7 @@ const TableProducts: React.FC<{ onProductChange: () => void }> = ({
     setMensagemCount(mensagemCount + 1);
     //tenta fazer o put dos novos dados para o produto
     try {
-      await axios.put(`http://localhost:3333/api/produto/${id}`, formData);
+      await api.put(`/produto/${id}`, formData);
       //se for bem sucedido retorna o feedback
       setMensagem({ sucesso: true, texto: "Produto atualizado com sucesso" });
     } catch (error) {
@@ -98,7 +99,7 @@ const TableProducts: React.FC<{ onProductChange: () => void }> = ({
     setMensagemCount(mensagemCount + 1);
     //tenta fazer o put com o campo deleted:true
     try {
-      await axios.put(`http://localhost:3333/api/delete-produto/${id}`);
+      await api.put(`/delete-produto/${id}`);
       setData((prevData) =>
         prevData.map((product) =>
           product.id === id ? { ...product, deleted: true } : product
@@ -126,7 +127,7 @@ const TableProducts: React.FC<{ onProductChange: () => void }> = ({
     setMensagemCount(mensagemCount + 1);
     //tenta fazer o put com o campo deleted:false
     try {
-      await axios.put(`http://localhost:3333/api/restore-produto/${id}`);
+      await api.put(`/restore-produto/${id}`);
       setData((prevData) =>
         prevData.map((product) =>
           product.id === id ? { ...product, deleted: false } : product

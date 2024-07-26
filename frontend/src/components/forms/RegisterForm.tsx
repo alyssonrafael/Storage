@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react"; //importaçao hook
 import MensagemCard from "../MessageCard";
+import api from "../../api";
 
 //interface para os tipos do inputs do form
 interface RegisterFormValues {
@@ -34,7 +34,7 @@ const RegisterForm: React.FC = () => {
     setMensagemCount(mensagemCount + 1);
     //requisisçao post para fazer cadastro no banco de dados
     try {
-      await axios.post("http://localhost:3333/api/register", {
+      await api.post("/register", {
         name: data.name,
         email: data.email,
         password: data.password,

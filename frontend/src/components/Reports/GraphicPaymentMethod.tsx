@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts'; // Importa o componente Chart da biblioteca react-apexcharts
-import axios from 'axios'; // Importa o axios para fazer requisições HTTP
+import api from '../../api';
 
 // Define os tipos para os dados recebidos da API
 interface PaymentMethodData {
@@ -48,7 +48,7 @@ const GraphicSalesByPaymentMethod = () => {
     const fetchData = async () => {
       try {
         // Faz uma requisição GET para buscar os dados dos métodos de pagamento
-        const response = await axios.get<PaymentMethodData>('http://localhost:3333/api/relatorios/metodos-de-pagamento');
+        const response = await api.get<PaymentMethodData>('/relatorios/metodos-de-pagamento');
         const data = response.data;
 
         // Calcula o valor máximo dos dados para ajustar o eixo Y

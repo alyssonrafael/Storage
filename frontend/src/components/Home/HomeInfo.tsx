@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios"
+import api from "../../api"
 
 const HomeInfo = () => {
 
@@ -9,7 +9,7 @@ const HomeInfo = () => {
     useEffect(() => {
         const fetchVendasHoje = async () => {
           try {
-            const response = await axios.get("http://localhost:3333/api/relatorios/vendas-dia"); 
+            const response = await api.get("/relatorios/vendas-dia"); 
             setVendasHoje(response.data.vendasDoDia); 
           } catch (error) {
             console.error("Erro ao buscar vendas hoje:", error);
@@ -18,7 +18,7 @@ const HomeInfo = () => {
     
         const fetchVendasMes = async () => {
           try {
-            const response = await axios.get("http://localhost:3333/api/relatorios/vendas-mes"); 
+            const response = await api.get("/relatorios/vendas-mes"); 
             setVendasMes(response.data.vendasDoMes); 
           } catch (error) {
             console.error("Erro ao buscar vendas do mês:", error);

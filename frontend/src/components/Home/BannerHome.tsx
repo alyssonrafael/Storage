@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"; //estado e efeito
 import { decodeToken } from "../utils/tokenUtils";//decodificaçao do doken
-import axios from "axios"; //axios para requisiçoes
 import { User } from "../utils/types"; //importaçao do types do user
+import api from "../../api";
 
 function BannerHome() {
 
@@ -17,8 +17,8 @@ function BannerHome() {
             Authorization: `Bearer ${token}`,//token na requisiçao
           },
         };
-        axios
-          .get(`http://localhost:3333/api/user/${decoded.userId}`, config)
+        api
+          .get(`/user/${decoded.userId}`, config)
           .then((response) => {
             const { name } = response.data;
             setUser({ name });

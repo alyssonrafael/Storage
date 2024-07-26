@@ -3,7 +3,7 @@ import "slick-carousel/slick/slick.css"; // Importa o estilo padrão do carrosse
 import "slick-carousel/slick/slick-theme.css"; // Importa o tema padrão do carrossel
 import Card from './Card'; // Importa o componente Card que será usado no carrossel
 import { useEffect, useState } from 'react'; // Importa useEffect e useState do React
-import axios from 'axios'; // Importa a biblioteca axios para fazer requisições HTTP
+import api from '../../api';
 
 // Componente principal ValueSalesCard
 const ValueSalesCard = () => {
@@ -17,9 +17,9 @@ const ValueSalesCard = () => {
     try {
       // Faz requisições para obter os dados das vendas do dia, mês e ano
       const [dayResponse, monthResponse, yearResponse] = await Promise.all([
-        axios.get('http://localhost:3333/api/relatorios/total-vendas-dia'),
-        axios.get('http://localhost:3333/api/relatorios/total-vendas-mes'),
-        axios.get('http://localhost:3333/api/relatorios/total-vendas-ano')
+        api.get('/relatorios/total-vendas-dia'),
+        api.get('/relatorios/total-vendas-mes'),
+        api.get('/relatorios/total-vendas-ano')
       ]);
 
       // Define os estados com os dados obtidos

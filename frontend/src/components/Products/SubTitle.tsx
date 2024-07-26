@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../api";
 
 // Componente funcional que exibe o número de produtos cadastrados e disponíveis
 const SubTitle: React.FC<{ productChange: boolean }> = ({ productChange }) => {
@@ -11,8 +11,8 @@ const SubTitle: React.FC<{ productChange: boolean }> = ({ productChange }) => {
     const fetchProductCount = async () => {
       try {
         // Requisição GET para o endpoint que retorna o número de produtos
-        const response = await axios.get(
-          "http://localhost:3333/api/produtos/count"
+        const response = await api.get(
+          "/produtos/count"
         );
         setProductCount(response.data.totalProdutos); // Define o número de produtos no estado
       } catch (error) {

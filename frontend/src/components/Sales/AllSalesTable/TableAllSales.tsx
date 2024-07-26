@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import SalesTable from "./SalesTable"; // Importa o componente para exibir a tabela de vendas
 import SaleDetailsModal from "./SaleDetailsModal"; // Importa o componente para exibir os detalhes da venda
 import DeleteConfirmationModal from "./DeleteConfirmationModal"; // Importa o componente para confirmar exclusão
 import MensagemCard from "../../MessageCard"; // Importa o componente para exibir mensagens de sucesso ou erro
 import { SalesData, Sale, Product } from "../../utils/types"; // Importa os tipos para os dados de vendas e produtos
+import api from "../../../api";
 
 // Componente principal que exibe todas as vendas e lida com ações como visualizar detalhes e deletar vendas
 const TableAllSales: React.FC<{ onSalesChange: () => void }> = ({
@@ -26,7 +26,7 @@ const TableAllSales: React.FC<{ onSalesChange: () => void }> = ({
     // Função para buscar os dados das vendas
     const fetchSalesData = async () => {
       try {
-        const response = await axios.get<SalesData>("http://localhost:3333/api/vendas");
+        const response = await api.get<SalesData>("/vendas");
         setSalesData(response.data); // Atualiza o estado com os dados das vendas
         setLoading(false); // Define o estado de carregamento como falso após receber os dados
       } catch (error) {
@@ -38,7 +38,7 @@ const TableAllSales: React.FC<{ onSalesChange: () => void }> = ({
     // Função para buscar os dados dos produtos
     const fetchProductsData = async () => {
       try {
-        const response = await axios.get<Product[]>("http://localhost:3333/api/produtos");
+        const response = await api.get<Product[]>("/produtos");
         setProducts(response.data); // Atualiza o estado com os dados dos produtos
       } catch (error) {
         console.error("Erro ao buscar dados dos produtos:", error); // Loga qualquer erro ocorrido
@@ -70,7 +70,7 @@ const TableAllSales: React.FC<{ onSalesChange: () => void }> = ({
 
     if (saleToDelete !== null) {
       try {
-        await axios.delete(`http://localhost:3333/api/venda/${saleToDelete}`);
+        await api.delete(`/venda/${saleToDelete}`);
         setSalesData(salesData.filter((sale) => sale.id !== saleToDelete)); // Atualiza a lista de vendas removendo a venda excluída
         setShowDeleteModal(false); // Fecha o modal de confirmação de exclusão
         setMensagem({ sucesso: true, texto: "Venda excluída com sucesso" }); // Define a mensagem de sucesso

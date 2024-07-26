@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { User } from "../utils/types";
 import MensagemCard from "../MessageCard";
+import api from "../../api";
 
 function UsersList() {
   // Estado para armazenar todos os usuários
@@ -25,7 +25,7 @@ function UsersList() {
 
       try {
         // Faz a requisição para buscar os usuários
-        const response = await axios.get("http://localhost:3333/api/users", {
+        const response = await api.get("/users", {
           headers: {
             Authorization: `Bearer ${token}`, // Adiciona o token no cabeçalho da requisição
           },
@@ -59,8 +59,8 @@ function UsersList() {
 
     try {
       // Faz a requisição para atualizar a função do usuário
-      await axios.patch(
-        `http://localhost:3333/api/users/${userId}/role`,
+      await api.patch(
+        `/users/${userId}/role`,
         { role: newRole },
         {
           headers: {
