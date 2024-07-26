@@ -13,7 +13,9 @@ const app = express();
 const prisma = new PrismaClient();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:4173' // Permitir meu front end local de build
+}));
 app.use(express.json());
 
 // Routes
