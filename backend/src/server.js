@@ -13,11 +13,19 @@ const app = express();
 const prisma = new PrismaClient();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: 'https://storage-frontend-eight.vercel.app/', // URL do frontend
+}));
 app.use(express.json());
 
 // Routes
-app.use('/api', authRoutes, userRoutes, categoriaRoutes, produtoRoutes, vendasRoutes, relatoriosRoutes);
+// Routes
+app.use('/api', authRoutes);
+app.use('/api', userRoutes);
+app.use('/api', categoriaRoutes);
+app.use('/api', produtoRoutes);
+app.use('/api', vendasRoutes);
+app.use('/api', relatoriosRoutes);
 
 // Teste de conexão com o banco de dados
 async function testDatabaseConnection() {
