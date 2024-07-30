@@ -51,7 +51,7 @@ Para começar a desenvolver este projeto, siga as instruções detalhadas nos RE
    ```
 2. **Leia os READMEs:**
 
-   - [Instruções para o Back-end](./backend//readme.md)
+   - [Instruções para o Back-end](./backend/README.md)
    - [Instruções para o Front-end](./frontend/README.md)
 
 ## Licença
