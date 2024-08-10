@@ -1,8 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 //inportaçoes para gerar os relatorios em exel
-const fs = require("fs");
-const path = require("path");
 const ExcelJS = require("exceljs");
 const dayjs = require("dayjs");
 
@@ -403,44 +401,34 @@ const getProductsSoldByCategory = async (req, res) => {
   }
 };
 
-// Função para garantir que o diretório existe
-const ensureDirectoryExistence = (filePath) => {
-  const dirname = path.dirname(filePath);
-  if (!fs.existsSync(dirname)) {
-    fs.mkdirSync(dirname, { recursive: true });
-  }
-};
-
 const getProductsReport = async (req, res) => {
-  const { categoriaId, disponivel } = req.query; //recebe por parametro o id da categoria e o bollean disponivel
+  const { categoriaId, disponivel } = req.query;
+
   try {
     // Preparando os filtros para a consulta
     const filters = {};
 
     if (categoriaId) {
-      filters.categoriaId = parseInt(categoriaId); // Convertendo para número inteiro
+      filters.categoriaId = parseInt(categoriaId);
     }
 
     if (disponivel !== undefined) {
-      filters.disponivel = disponivel === "true"; // Convertendo string 'true'/'false' para booleano
+      filters.disponivel = disponivel === "true";
     }
 
-    // Consultando os produtos com base nos filtros
     const produtos = await prisma.produto.findMany({
       where: {
         ...filters,
-        deleted: false, //apenas produtos nao deletados
+        deleted: false,
       },
       include: {
-        categoria: true, // Incluindo a informação da categoria
+        categoria: true,
       },
     });
 
-    // Geração do arquivo Excel
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Relatório de Produtos");
 
-    //montagem da tabela (titulos)
     worksheet.columns = [
       { header: "ID", key: "id", width: 10 },
       { header: "Nome", key: "nome", width: 30 },
@@ -449,7 +437,7 @@ const getProductsReport = async (req, res) => {
       { header: "Preço", key: "preco", width: 15 },
       { header: "Quantidade em Estoque", key: "quantidade", width: 20 },
     ];
-    //adicionando linhas a tabela
+
     produtos.forEach((produto) => {
       worksheet.addRow({
         id: produto.id,
@@ -461,61 +449,51 @@ const getProductsReport = async (req, res) => {
       });
     });
 
-    const filePath = path.join(__dirname, "temp", "relatorio-produtos.xlsx");
-    ensureDirectoryExistence(filePath); // Garante que o diretório existe
-    await workbook.xlsx.writeFile(filePath);
+    // Enviar o arquivo para download diretamente da memória
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", "attachment; filename=relatorio-produtos.xlsx");
 
-    // Enviar o arquivo para download
-    res.download(filePath, "relatorio-produtos.xlsx", (err) => {
-      if (err) {
-        console.error("Erro ao baixar o arquivo:", err);
-        res.status(500).send("Erro ao baixar o arquivo.");
-      } else {
-        fs.unlinkSync(filePath); // Remove o arquivo após o download
-      }
-    });
+    await workbook.xlsx.write(res);
+    res.end();
   } catch (error) {
     console.error("Erro ao gerar relatório:", error);
-    res.status(500).json({ error: error.message }); // Retorna erro se ocorrer uma exceção
+    res.status(500).json({ error: error.message });
   }
 };
 
 const getSalesReport = async (req, res) => {
-  const { startDate, endDate, formaDePagamento } = req.query; // Extrai parâmetros da query string
+  const { startDate, endDate, formaDePagamento } = req.query;
 
   try {
-    // Converta startDate e endDate para o início e fim do dia, respectivamente
-    const start = startDate
-      ? dayjs(startDate).startOf("day").toDate()
-      : undefined;
+    const start = startDate ? dayjs(startDate).startOf("day").toDate() : undefined;
     const end = endDate ? dayjs(endDate).endOf("day").toDate() : undefined;
 
-    // Consultando as vendas com base nos filtros
     const vendas = await prisma.venda.findMany({
       where: {
         data: {
-          gte: start, // Maior ou igual a startDate
-          lte: end, // Menor ou igual a endDate
+          gte: start,
+          lte: end,
         },
-        deleted: false, // Exclui vendas marcadas como deletadas
-        formaDePagamento: formaDePagamento || undefined, // Filtro opcional por forma de pagamento
+        deleted: false,
+        formaDePagamento: formaDePagamento || undefined,
       },
       include: {
         produtos: {
           include: {
-            produto: true, // Inclui detalhes do produto
+            produto: true,
           },
         },
-        user: true, // Inclui detalhes do usuário
+        user: true,
       },
     });
 
-    // Verifica se o formato solicitado é Excel
     if (req.query.formato === "excel") {
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Relatório de Vendas");
 
-      // Definindo as colunas da planilha
       worksheet.columns = [
         { header: "ID", key: "id", width: 10 },
         { header: "Data", key: "data", width: 20 },
@@ -523,30 +501,21 @@ const getSalesReport = async (req, res) => {
         { header: "Desconto", key: "desconto", width: 15 },
         { header: "Usuário", key: "user", width: 20 },
         { header: "Forma de Pagamento", key: "formaDePagamento", width: 20 },
-        {
-          header: "Total Produtos Vendidos",
-          key: "totalProductsSold",
-          width: 25,
-        },
+        { header: "Total Produtos Vendidos", key: "totalProductsSold", width: 25 },
         { header: "Observação", key: "observacao", width: 30 },
         { header: "Detalhes dos Produtos", key: "productsDetails", width: 50 },
       ];
 
-      // Adicionando os dados das vendas à planilha
       vendas.forEach((venda) => {
-        // Calcula o total de produtos vendidos
         const totalProductsSold = venda.produtos.reduce(
           (sum, vendaProduto) => sum + vendaProduto.quantidade,
           0
         );
 
-        // Detalhes dos produtos vendidos formatados como string
         const productsDetailsStr = venda.produtos
           .map((vendaProduto) => {
             const produto = vendaProduto.produto;
-            return `Produto ID: ${produto.id}, Nome: ${
-              produto.nome
-            }, Quantidade: ${
+            return `Produto ID: ${produto.id}, Nome: ${produto.nome}, Quantidade: ${
               vendaProduto.quantidade
             }, Preço: R$${produto.preco.toFixed(2)}, Total: R$${(
               vendaProduto.quantidade * produto.preco
@@ -554,10 +523,9 @@ const getSalesReport = async (req, res) => {
           })
           .join("; ");
 
-        // Adiciona uma linha à planilha
         worksheet.addRow({
           id: venda.id,
-          data: dayjs(venda.data).format("YYYY-MM-DD"), // Formata a data para 'YYYY-MM-DD'
+          data: dayjs(venda.data).format("YYYY-MM-DD"),
           total: venda.total.toFixed(2),
           desconto: venda.desconto.toFixed(2),
           user: venda.user.name,
@@ -568,24 +536,20 @@ const getSalesReport = async (req, res) => {
         });
       });
 
-      // Define o caminho do arquivo
-      const filePath = path.join(__dirname, "relatorio-vendas.xlsx");
-      await workbook.xlsx.writeFile(filePath); // Salva o arquivo Excel
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
+      res.setHeader("Content-Disposition", "attachment; filename=relatorio-vendas.xlsx");
 
-      // Envia o arquivo para download
-      res.download(filePath, "relatorio-vendas.xlsx", (err) => {
-        if (err) {
-          console.error("Erro ao baixar o arquivo:", err);
-          res.status(500).send("Erro ao baixar o arquivo.");
-        } else {
-          fs.unlinkSync(filePath); // Remove o arquivo após o download
-        }
-      });
+      await workbook.xlsx.write(res);
+      res.end();
     } else {
-      res.status(400).send("Formato não suportado."); // Responde com erro se o formato não for suportado
+      res.status(400).send("Formato não suportado.");
     }
   } catch (error) {
-    res.status(500).json({ error: error.message }); // Retorna erro se ocorrer uma exceção
+    console.error("Erro ao gerar relatório:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 
